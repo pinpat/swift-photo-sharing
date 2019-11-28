@@ -31,11 +31,13 @@
 		5440F01B237BDF7B000EDD1A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5440F01A237BDF7B000EDD1A /* Preview Assets.xcassets */; };
 		5440F01E237BDF7B000EDD1A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5440F01C237BDF7B000EDD1A /* LaunchScreen.storyboard */; };
 		5440F027237BE5F9000EDD1A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5440F026237BE5F9000EDD1A /* Extensions.swift */; };
-		5440F02E237C03A0000EDD1A /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 5440F02D237C03A0000EDD1A /* URLImage */; };
 		545EE9D4237C50E500D532B0 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545EE9D3237C50E500D532B0 /* Utility.swift */; };
+		5464235B238E1C6B00FCB828 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 5464235A238E1C6B00FCB828 /* URLImage */; };
 		784A81672387DADE0082AF00 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784A81662387DADE0082AF00 /* ImagePicker.swift */; };
 		784A81692387DC6C0082AF00 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784A81682387DC6C0082AF00 /* CameraView.swift */; };
 		7850FCD423877AA9001D87DA /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 7850FCD323877AA9001D87DA /* Apollo */; };
+		78610291238E350B0082AB6D /* LoginScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78610290238E350B0082AB6D /* LoginScreen.swift */; };
+		78610293238E69840082AB6D /* RegisterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78610292238E69840082AB6D /* RegisterScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +71,8 @@
 		784A8163238793FD0082AF00 /* schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = schema.json; path = server/schema.json; sourceTree = "<group>"; };
 		784A81662387DADE0082AF00 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		784A81682387DC6C0082AF00 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		78610290238E350B0082AB6D /* LoginScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreen.swift; sourceTree = "<group>"; usesTabs = 0; wrapsLines = 1; };
+		78610292238E69840082AB6D /* RegisterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,7 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5440F02E237C03A0000EDD1A /* URLImage in Frameworks */,
+				5464235B238E1C6B00FCB828 /* URLImage in Frameworks */,
 				7850FCD423877AA9001D87DA /* Apollo in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -132,6 +136,8 @@
 				5440F019237BDF7B000EDD1A /* Preview Content */,
 				784A81662387DADE0082AF00 /* ImagePicker.swift */,
 				784A81682387DC6C0082AF00 /* CameraView.swift */,
+				78610290238E350B0082AB6D /* LoginScreen.swift */,
+				78610292238E69840082AB6D /* RegisterScreen.swift */,
 			);
 			path = memories;
 			sourceTree = "<group>";
@@ -161,8 +167,8 @@
 			);
 			name = memories;
 			packageProductDependencies = (
-				5440F02D237C03A0000EDD1A /* URLImage */,
 				7850FCD323877AA9001D87DA /* Apollo */,
+				5464235A238E1C6B00FCB828 /* URLImage */,
 			);
 			productName = memories;
 			productReference = 5440F00E237BDF79000EDD1A /* memories.app */;
@@ -193,8 +199,8 @@
 			);
 			mainGroup = 5440F005237BDF79000EDD1A;
 			packageReferences = (
-				5440F02C237C03A0000EDD1A /* XCRemoteSwiftPackageReference "url-image" */,
 				7850FCD223877AA9001D87DA /* XCRemoteSwiftPackageReference "apollo-ios" */,
+				54642359238E1C6B00FCB828 /* XCRemoteSwiftPackageReference "url-image" */,
 			);
 			productRefGroup = 5440F00F237BDF79000EDD1A /* Products */;
 			projectDirPath = "";
@@ -227,9 +233,11 @@
 				5440F012237BDF79000EDD1A /* AppDelegate.swift in Sources */,
 				543B5A28237FAB1A00D6AEA9 /* AlbumImageAudioScreen.swift in Sources */,
 				541626AA237D62AF00783862 /* PageControl.swift in Sources */,
+				78610291238E350B0082AB6D /* LoginScreen.swift in Sources */,
 				5416269A237D04D500783862 /* ShareScreen.swift in Sources */,
 				541626A2237D434F00783862 /* AlbumImageDetailScreen.swift in Sources */,
 				543B5A2A237FAD9400D6AEA9 /* AudioPlayer.swift in Sources */,
+				78610293238E69840082AB6D /* RegisterScreen.swift in Sources */,
 				784A81692387DC6C0082AF00 /* CameraView.swift in Sources */,
 				5416268D237CEE4200783862 /* CreatorScreen.swift in Sources */,
 				54162692237CF18100783862 /* Albums.swift in Sources */,
@@ -442,12 +450,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		5440F02C237C03A0000EDD1A /* XCRemoteSwiftPackageReference "url-image" */ = {
+		54642359238E1C6B00FCB828 /* XCRemoteSwiftPackageReference "url-image" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/dmytro-anokhin/url-image.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.8;
+				branch = master;
+				kind = branch;
 			};
 		};
 		7850FCD223877AA9001D87DA /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
@@ -461,9 +469,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5440F02D237C03A0000EDD1A /* URLImage */ = {
+		5464235A238E1C6B00FCB828 /* URLImage */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5440F02C237C03A0000EDD1A /* XCRemoteSwiftPackageReference "url-image" */;
+			package = 54642359238E1C6B00FCB828 /* XCRemoteSwiftPackageReference "url-image" */;
 			productName = URLImage;
 		};
 		7850FCD323877AA9001D87DA /* Apollo */ = {

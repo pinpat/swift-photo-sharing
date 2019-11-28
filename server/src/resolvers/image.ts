@@ -23,7 +23,7 @@ export const resolvers: IResolvers = {
     Mutation: {
         findAllImageByAlbumId: async (_, { albumId }, { user }) => {
             return await Image.find({
-                relations: ["image", "author"],
+                relations: ["image", "author", "album"],
                 where: {
                     album: {
                         id: albumId,

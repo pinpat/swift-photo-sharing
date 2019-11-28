@@ -35,15 +35,15 @@ export class Image extends BaseEntity {
     )
     album: Album;
 
-    @OneToOne(() => Attachment)
+    @OneToOne(() => Attachment, {nullable: true} )
     @JoinColumn()
     audioWho: Attachment;
 
-    @OneToOne(() => Attachment)
+    @OneToOne(() => Attachment,{nullable: true})
     @JoinColumn()
     audioWhen: Attachment;
 
-    @OneToOne(() => Attachment)
+    @OneToOne(() => Attachment,{nullable: true})
     @JoinColumn()
     audioWhere: Attachment;
 

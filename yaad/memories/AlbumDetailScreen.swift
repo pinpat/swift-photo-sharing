@@ -11,12 +11,14 @@ import URLImage
 
 
 struct AlbumDetailScreen: View{
-    var album: Album
+    @State var album: Album
     @State var showAction: Bool = false
     @State var showImagePicker: Bool = false
-    @State var uiImage: UIImage? = nil
-    @State var showCamera: Bool = false
     @State var image: Image? = nil
+    @State var showCamera: Bool = false
+    @EnvironmentObject var store: Store
+    @State var albumIndex: Int = 0
+    
     var body: some View {
         VStack{
             
@@ -34,6 +36,8 @@ struct AlbumDetailScreen: View{
                         .font(.body)
                 }
                 
+                self.image?.resizable().frame(width: 100, height: 100)
+                
                 Button(action:{
                     withAnimation{
                         self.showImagePicker = true
@@ -47,10 +51,17 @@ struct AlbumDetailScreen: View{
                         .font(.body)
                 }
                 .sheet(isPresented: $showImagePicker, onDismiss: {
-                    self.showImagePicker = false
-                }, content: {
-                    ImagePicker(isShown: self.$showImagePicker, uiImage: self.$uiImage)
-                })
+                    if(self.image != nil){
+                        let newImage = AlbumImage(id: "009", url: "", imageData: self.image)
+                        self.album.images.append(newImage)
+                        self.store.albums[self.albumIndex].images.append(newImage)
+                        print(self.album.images.count)
+                        self.image = nil
+//                        print(self.store.albums[self.albumIndex].images)
+                    }
+                }){
+                    ImagePicker(image: self.$image)
+                }
 
                 Button(action:{
                     withAnimation{
@@ -69,20 +80,44 @@ struct AlbumDetailScreen: View{
                 }, content: {
                     CameraView(showCameraView: self.$showCamera, pickedImage: self.$image)
                 })
-                FlowStack(columns: 3, numItems: album.images.count, alignment: .leading) { index, colWidth in
-                    NavigationLink(destination: AlbumImageDetailScreen(album: self.album, selectedIndex: index)){
-                        ImageLoader(imageURL: URL(string: self.album.images[index].url))
-                            .frame(width: colWidth, height: colWidth, alignment: .center)
-                            .aspectRatio(contentMode: .fill)
-                            .clipped()
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.horizontal, 2)
-                    .padding(.vertical, 2)
-                    .frame(width: colWidth, height: colWidth)
-                    
-                }.padding(2)
-                    .navigationBarTitle(album.title)
+                VStack{
+                    FlowStack(columns: 3, numItems: self.store.albums[self.albumIndex].images.count, alignment: .leading) { index, colWidth in
+                        NavigationLink(destination: AlbumImageDetailScreen(album: self.album, selectedIndex: index)){
+                            if index < self.album.images.count {
+                                if self.album.images[index].url != "" {
+                                    /*ImageLoader(imageURL: URL(string: self.album.images[index].url))
+                                    .frame(width: colWidth, height: colWidth, alignment: .center)
+                                    .aspectRatio(contentMode: .fill)
+                                    .clipped()*/
+                                   
+                                    URLImage(URL(string: self.album.images[index].url)!,
+                                    delay: 0.25,
+                                    processors: [ Resize(size: CGSize(width: colWidth, height: colWidth), scale: UIScreen.main.scale) ],
+                                    content:  {
+                                        $0.image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .clipped()
+                                    })
+                                        .frame(width: colWidth, height: colWidth)
+                                    
+                                    
+                                }else{
+                                    self.album.images[index].imageData?.resizable()
+                                    .frame(width: colWidth, height: colWidth, alignment: .center)
+                                    .aspectRatio(contentMode: .fill)
+                                    .clipped()
+                                }
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .padding(.horizontal, 2)
+                        .padding(.vertical, 2)
+                        .frame(width: colWidth, height: colWidth)
+
+                    }.padding(2)
+                        .navigationBarTitle(album.title)
+                }
             }
         }
     }

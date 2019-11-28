@@ -5,12 +5,11 @@ import {
     OneToMany,
     ManyToOne,
     JoinColumn,
-    OneToOne,
-    BaseEntity
+    BaseEntity,
+    Index
 } from "typeorm";
 import { Image } from "./Image";
 import { User } from "./User";
-import { Attachment } from "./Attachment";
 
 @Entity()
 export class Album extends BaseEntity {
@@ -20,10 +19,6 @@ export class Album extends BaseEntity {
     @Column()
     name: string;
 
-    @OneToOne(() => Attachment)
-    @JoinColumn()
-    gallery: Attachment;
-
     @Column({
         type: "timestamp",
         default: () => "CURRENT_TIMESTAMP"
@@ -32,7 +27,8 @@ export class Album extends BaseEntity {
 
     @OneToMany(
         () => Image,
-        image => image.album
+        image => image.album,
+        {nullable: true}
     )
     images: Image[];
 
@@ -42,4 +38,8 @@ export class Album extends BaseEntity {
     })
     @JoinColumn()
     author: User;
+
+    @Index('share_code_idx', {unique: true})
+    @Column()
+    shareCode: String;
 }

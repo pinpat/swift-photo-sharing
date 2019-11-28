@@ -9,7 +9,7 @@ export const resolvers: IResolvers = {
                 throw new Error("Access denied!");
             }
             return await Album.find({
-                relations: ["gallery", "author"],
+                relations: ["author","images"],
                 where: {
                     author: {
                         id: user.id
@@ -19,30 +19,17 @@ export const resolvers: IResolvers = {
         }
     },
     Mutation: {
-        saveAlbum: async (_, { name, attachmentId },{user}) => {
-            const gallery = await Attachment.findOne({
-                where: { id: attachmentId }
-            });
-            if (!gallery) {
-                throw new Error("File not found!");
-            }
+        saveAlbum: async (_, { name },{user}) => {
             let newAlbum = new Album();
             newAlbum.name = name;
-            newAlbum.gallery = gallery;
             newAlbum.author = user;
+            newAlbum.shareCode = Math.random().toString(36).substr(2, 8).toUpperCase();
             return await Album.save(newAlbum);
         },
         deleteAlbum: async (_, { id}, {user}) => {
-           /* const user = await User.findOne({ where: { id: authorId } });
-            if (!user) {
-                throw new Error("User not found!");
-            }*/
-
-
             const album = await Album.findOne({
                 relations: [
                     "author",
-                    "gallery",
                     "images",
                     "images.image",
                     "images.audioWhen",
@@ -56,7 +43,6 @@ export const resolvers: IResolvers = {
             }
 
             let ids = [
-                album.gallery.id,
                 ...album.images.reduce(
                     (init, image) => image? [
                         ...init,
@@ -71,21 +57,18 @@ export const resolvers: IResolvers = {
             new Attachment().removeFile(ids);
 
             return await album.remove();
-
-            //return await Album.delete({ id, author: { id: authorId } });
         },
         findAlbumById: async (_, { id }, { user }) => {
             return await Album.findOne({
                 relations: [
                     "author",
-                    "gallery",
                     "images",
                     "images.image",
                     "images.audioWhen",
                     "images.audioWhere",
                     "images.audioWho"
                 ],
-                where: { id, author: { id: user.id } }
+                where: { id, author: { id: user.id }, images: {id: user.id} }
             });
         }
     }

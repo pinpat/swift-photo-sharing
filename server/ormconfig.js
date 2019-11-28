@@ -4,7 +4,7 @@ module.exports = {
   port: process.env.MYSQL_PORT ? parseInt(process.env.MYSQL_PORT) : 3306,
   database: process.env.MYSQL_DATABASE ? process.env.MYSQL_DATABASE : 'yaad',
   username: process.env.MYSQL_USERNAME ? process.env.MYSQL_USERNAME : 'root',
-  password: process.env.MYSQL_PASSWORD ? process.env.MYSQL_PASSWORD : 'Root@123',
+  password: process.env.MYSQL_PASSWORD ? process.env.MYSQL_PASSWORD : 'root', //Root@123
   charset: 'utf8mb4_bin',
   synchronize: true,
   logging: false,

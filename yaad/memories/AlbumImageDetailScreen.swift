@@ -49,9 +49,16 @@ struct ImageDetailView: View{
     
     var body: some View{
        VStack{
+        if self.album.images[self.selectedIndex].url != "" {
            ImageLoader(imageURL: URL(string: self.album.images[self.selectedIndex].url))
             .aspectRatio(contentMode: ContentMode.fit)
            .frame(minWidth: 0, idealWidth: 0, maxWidth: .infinity, minHeight: 0, idealHeight: 0, maxHeight: .infinity, alignment: .center)
+        }
+        else{
+            self.album.images[self.selectedIndex].imageData?.resizable()
+            .aspectRatio(contentMode: ContentMode.fit)
+            .frame(minWidth: 0, idealWidth: 0, maxWidth: .infinity, minHeight: 0, idealHeight: 0, maxHeight: .infinity, alignment: .center)
+        }
            HStack(alignment: .center, spacing: 30){
             
             Button(action: {

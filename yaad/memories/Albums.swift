@@ -19,15 +19,15 @@ struct Albums: View {
         GeometryReader { geometry in
             ScrollView(Axis.Set.vertical) {
             VStack(alignment: .leading, spacing: 2){
-                ForEach(self.store.albums) { album in
-                    NavigationLink(destination: AlbumDetailScreen(album: album)){
+                ForEach(0..<self.store.albums.count) { index in
+                    NavigationLink(destination: AlbumDetailScreen(album: self.store.albums[index], albumIndex: index)){
                         ZStack(alignment: .center){
-                            ImageLoader(imageURL: URL(string: album.image))
+                            ImageLoader(imageURL: URL(string: self.store.albums[index].image))
                                 .frame(width: geometry.size.width, height: 250, alignment: .center)
                             .aspectRatio(contentMode: .fill)
                             .clipped()
                             
-                            Text(album.title)
+                            Text(self.store.albums[index].title)
                                 .font(.headline)
                                 .foregroundColor(.white)
                         }

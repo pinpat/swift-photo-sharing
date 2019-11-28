@@ -55,18 +55,25 @@ export const schema = gql`
         image: Attachment!
         created: DateTime!
         album: Album!
-        audioWho: Attachment!
-        audioWhen: Attachment!
-        audioWhere: Attachment!
+        audioWho: Attachment
+        audioWhen: Attachment
+        audioWhere: Attachment
         author: User!
     }
 
     type Album {
         id: ID!
         name: String!
-        gallery: Attachment!
         created: DateTime!
-        images: [Image!]
+        images: [Image]
+        author: User!
+        shareCode: String!
+    }
+
+    type Sharing {
+        id: ID!
+        album: Album!
+        created: DateTime!
         author: User!
     }
 
@@ -74,19 +81,21 @@ export const schema = gql`
         me: User! @hasRole(roles: [authenticated])
         findAllAlbum: [Album!] @hasRole(roles: [authenticated])
         findAllImage: [Image!] @hasRole(roles: [authenticated])
+        findAllAlbumByAuthor: [Album!] @hasRole(roles: [authenticated])
     }
 
     type Mutation {
         register(input: NewUser!): User!
         login(email: String!, password: String!): Token!
-        saveAlbum(name: String!, attachmentId: ID!): Album! @hasRole(roles: [authenticated])
+        saveAlbum(name: String!): Album! @hasRole(roles: [authenticated])
         deleteAlbum(id: ID!): Album! @hasRole(roles: [authenticated])
         findAlbumById(id: ID!): Album @hasRole(roles: [authenticated])
         findAllImageByAlbumId(albumId: ID!): [Image!] @hasRole(roles: [authenticated])
-        saveImage(id: ID!,albumId: ID!): Image @hasRole(roles: [authenticated])
-        saveAudio(imageId: ID!, audioId: ID!, type: String!): Image! @hasRole(roles: [authenticated])
+        saveImage(imageId: ID!, albumId: ID!): Image @hasRole(roles: [authenticated])
+        saveAudio(id: ID!, audioId: ID!, type: String!): Image! @hasRole(roles: [authenticated])
         deleteImage(id: ID!): Image! @hasRole(roles: [authenticated])
         findImage(id: ID!): Image! @hasRole(roles: [authenticated])
+        addAlbumShare(shareCode: String!): Sharing! @hasRole(roles: [authenticated])
     }
 
 `;
