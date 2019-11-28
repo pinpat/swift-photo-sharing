@@ -1,23 +1,22 @@
 version: "3.1"
 services:
   server:
-    build: ./server
-      container_name: server
-      restart: always
-      image: server
-      environment:
-        - "PORT=8080"
-        - "MYSQL_HOST=mysql"
-        - "MYSQL_PORT=3306"
-        - "MYSQL_DATABASE=yaad"
-        - "MYSQL_PASSWORD=yaad@2019"
-        - "DOMAIN=dev.crouchjump.com"
-        - "NODE_ENV=production"
-        - "DISABLE_PLAYGROUND=false"
-      ports:
-        - 8080:8080
-      links:
-        - mysql
+    build: ./
+    container_name: server
+    restart: always
+    image: server
+    environment:
+      - "PORT=8080"
+      - "MYSQL_HOST=mysql"
+      - "MYSQL_PORT=3306"
+      - "MYSQL_DATABASE=yaad"
+      - "MYSQL_PASSWORD=yaad@2019"
+      - "NODE_ENV=production"
+      - "DISABLE_PLAYGROUND=false"
+    ports:
+      - 8080:8080
+    links:
+      - mysql
   mysql:
     container_name: mysql
     restart: always
