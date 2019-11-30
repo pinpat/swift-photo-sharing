@@ -1,0 +1,6 @@
+platform :ios, '9.0'
+use_frameworks!
+
+target 'memories' do
+  pod 'Apollo', '~> 0.20.0'
+end

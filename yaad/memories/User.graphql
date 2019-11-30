@@ -1,0 +1,23 @@
+
+mutation login($email: String!, $password: String!){
+  login(email: $email, password: $password){
+    id
+    user{
+      id
+      email
+      roles
+    }
+    expired
+  }
+}
+
+mutation register($email: String!, $password: String!){
+  register(input: {
+    email: $email
+    password: $password
+  }){
+    id
+    email
+    created
+  }
+}

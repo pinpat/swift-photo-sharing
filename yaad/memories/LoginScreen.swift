@@ -27,9 +27,7 @@ struct LoginScreen: View {
                     .padding()
                 Spacer()
                 VStack(alignment: .leading){
-                    TextField("Email", text: $email, onEditingChanged: { event in
-                        self.onChange = true
-                    })
+                    TextField("Email", text: $email)
                         .padding()
                     if !isValidEmail(emailStr: self.email) && self.onChange {
                         Text("Email is invalid!")
@@ -52,7 +50,17 @@ struct LoginScreen: View {
                         self.onChange = true
                         print(isValidEmail(emailStr: self.email) && self.onChange)
                         if isValidEmail(emailStr: self.email) && self.onChange {
-                            self.isLogin = true
+                            Network.shared.apollo.perform(mutation: LoginMutation(email: self.email, password: self.password)) { result in
+                                switch result {
+                                    case .success:
+                                        guard let data = try? result.get().data else { return }
+                                        self.isLogin = true
+                                        UserManager.shared.hasAuthenticatedUser = true
+                                        UserManager.shared.currentAuthToken = data.login.id
+                                    case .failure:
+                                        print(result)
+                                }
+                            }
                         }
                     }
                 }){

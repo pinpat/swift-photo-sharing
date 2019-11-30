@@ -36,7 +36,7 @@ struct ContentView: View {
                     if(self.isScreenLogin){
                         LoginScreen(isLogin: $isLogin, isScreenLogin: $isScreenLogin)
                     }else{
-                        RegisterScreen(isScreenLogin: $isScreenLogin)
+                        RegisterScreen(isScreenLogin: $isScreenLogin, isLogin: $isLogin)
                     }
                 }
             }.edgesIgnoringSafeArea(.all)

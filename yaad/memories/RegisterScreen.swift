@@ -13,7 +13,8 @@ struct RegisterScreen: View {
     @State var password: String = ""
     @Binding var isScreenLogin: Bool
     @State var onChange: Bool = false
-    
+    @Binding var isLogin: Bool
+
     var body: some View {
         VStack{
             VStack{
@@ -29,9 +30,7 @@ struct RegisterScreen: View {
                 }
                 Spacer()
                 VStack(alignment: .leading){
-                    TextField("Email", text: $email, onEditingChanged: { event in
-                        self.onChange = true
-                    })
+                    TextField("Email", text: $email)
                         .padding()
                         .shadow(radius: 8)
                     if !isValidEmail(emailStr: self.email) && self.onChange {
@@ -52,6 +51,24 @@ struct RegisterScreen: View {
                 }
                 Button(action:{
                     self.onChange = true
+                    Network.shared.apollo.perform(mutation: RegisterMutation(email: self.email, password: self.password)){ result in
+                        switch result {
+                            case .success:
+                                Network.shared.apollo.perform(mutation: LoginMutation(email: self.email, password: self.password)) { rs in
+                                        switch rs {
+                                            case .success:
+                                               guard let data = try? rs.get().data else { return }
+                                               self.isLogin = true
+                                               UserManager.shared.hasAuthenticatedUser = true
+                                               UserManager.shared.currentAuthToken = data.login.id
+                                            case .failure:
+                                                print(result)
+                                        }
+                                }
+                            case .failure:
+                                print(result)
+                        }
+                    }
                 }){
                     Text("Register")
                         .frame(maxWidth: .infinity)
@@ -79,7 +96,8 @@ struct RegisterScreen: View {
 
 struct RegisterScreen_Previews: PreviewProvider {
     @State static var isScreenLogin: Bool = false
+    @State static var isLogin: Bool = false
     static var previews: some View {
-        RegisterScreen(isScreenLogin: $isScreenLogin)
+        RegisterScreen(isScreenLogin: $isScreenLogin, isLogin: $isLogin)
     }
 }
