@@ -1,0 +1,1 @@
+ssh -i ./private.pem ec2-user@3.212.245.106

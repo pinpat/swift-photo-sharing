@@ -1,6 +1,9 @@
 import { IResolvers } from "graphql-tools";
 import { Album } from "../entity/Album";
 import { Attachment } from "../entity/Attachment";
+import {generateFileUrl} from "../file";
+import moment from "moment";
+import { Image } from "../entity/Image";
 
 export const resolvers: IResolvers = {
     Query: {
@@ -8,25 +11,53 @@ export const resolvers: IResolvers = {
             if (!user) {
                 throw new Error("Access denied!");
             }
-            return await Album.find({
-                relations: ["author","images"],
+            let albums = await Album.find({
+                relations: [
+                    "author",
+                    "images",
+                    "images.image",
+                    "images.audioWho",
+                    "images.audioWhen",
+                    "images.audioWhere"
+                ],
                 where: {
                     author: {
                         id: user.id
                     }
                 }
             });
+            albums.map(album => {
+                if(album.images.length){
+                    album.images = album.images.map((image: Image) => {
+                        image.image.url = generateFileUrl(image.image.name, moment().add('1', 'day').unix())
+                        if(image.audioWhen){
+                            image.audioWhen.url = generateFileUrl(image.audioWhen.name, moment().add('1', 'day').unix())
+                        }
+                        if(image.audioWhere){
+                            image.audioWhere.url = generateFileUrl(image.audioWhere.name, moment().add('1', 'day').unix())
+                        }
+                        if(image.audioWho){
+                            image.audioWho.url = generateFileUrl(image.audioWho.name, moment().add('1', 'day').unix())
+                        }
+                        return image
+                    })
+                }
+            })
+            return albums
         }
     },
     Mutation: {
-        saveAlbum: async (_, { name },{user}) => {
+        saveAlbum: async (_, { name }, { user }) => {
             let newAlbum = new Album();
             newAlbum.name = name;
             newAlbum.author = user;
-            newAlbum.shareCode = Math.random().toString(36).substr(2, 8).toUpperCase();
+            newAlbum.shareCode = Math.random()
+                .toString(36)
+                .substr(2, 8)
+                .toUpperCase();
             return await Album.save(newAlbum);
         },
-        deleteAlbum: async (_, { id}, {user}) => {
+        deleteAlbum: async (_, { id }, { user }) => {
             const album = await Album.findOne({
                 relations: [
                     "author",
@@ -44,13 +75,20 @@ export const resolvers: IResolvers = {
 
             let ids = [
                 ...album.images.reduce(
-                    (init, image) => image? [
-                        ...init,
-                        ...image.image? [image.image.id]: [],
-                        ...image.audioWhen ? [image.audioWhen.id]: [],
-                        ...image.audioWhere ? [image.audioWhere.id]: [],
-                        ...image.audioWho ? [image.audioWho.id]: []
-                    ]: [...init],
+                    (init, image) =>
+                        image
+                            ? [
+                                  ...init,
+                                  ...(image.image ? [image.image.id] : []),
+                                  ...(image.audioWhen
+                                      ? [image.audioWhen.id]
+                                      : []),
+                                  ...(image.audioWhere
+                                      ? [image.audioWhere.id]
+                                      : []),
+                                  ...(image.audioWho ? [image.audioWho.id] : [])
+                              ]
+                            : [...init],
                     new Array<number>()
                 )
             ].filter(_ => _);
@@ -68,7 +106,7 @@ export const resolvers: IResolvers = {
                     "images.audioWhere",
                     "images.audioWho"
                 ],
-                where: { id, author: { id: user.id }, images: {id: user.id} }
+                where: { id, author: { id: user.id }, images: { id: user.id } }
             });
         }
     }

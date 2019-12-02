@@ -1,0 +1,47 @@
+query findAllAlbum{
+  findAllAlbum{
+    id
+    name
+    created
+    images{
+      id
+      image{
+        id
+        name
+        url
+      }
+      audioWho{
+        id
+        name
+        url
+      }
+      audioWhen{
+        id
+        name
+        url
+      }
+      audioWhere{
+        id
+        name
+        url
+      }
+    }
+  }
+}
+
+mutation saveAlbum($name: String!){
+  saveAlbum(name: $name){
+    name
+    author{
+      id
+      firstName
+      lastName
+    }
+  }
+}
+
+mutation deleteAlbum($id: ID!){
+  deleteAlbum(id: $id){
+    name
+  }
+}

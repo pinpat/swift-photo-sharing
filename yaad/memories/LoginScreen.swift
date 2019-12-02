@@ -29,6 +29,7 @@ struct LoginScreen: View {
                 VStack(alignment: .leading){
                     TextField("Email", text: $email)
                         .padding()
+                        .autocapitalization(.none)
                     if !isValidEmail(emailStr: self.email) && self.onChange {
                         Text("Email is invalid!")
                             .foregroundColor(.red)

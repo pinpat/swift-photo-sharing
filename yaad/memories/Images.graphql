@@ -1,0 +1,57 @@
+query findAllImage{
+  findAllImage{
+    image{
+        name
+      originalName
+    }
+  }
+}
+
+mutation saveImage($imageId: ID!, $albumId: ID!){
+  saveImage(imageId: $imageId albumId: $albumId){
+    image{
+        name
+    }
+  }
+}
+
+mutation findAlbumById($id: ID!){
+  findAlbumById(id: $id){
+    name
+    images{
+      image{
+        name
+      }
+      created
+      audioWho{
+        name
+      }
+      audioWhen{
+        name
+      }
+      audioWhere{
+        name
+      }
+    }
+    shareCode
+      created
+    author{
+      firstName
+      lastName
+    }
+  }
+}
+
+mutation findAllImageByAlbumId($albumId: ID!){
+  findAllImageByAlbumId(albumId: $albumId){
+    id
+    image{
+      name
+      originalName
+    }
+    album{
+      id
+      name
+    }
+  }
+}

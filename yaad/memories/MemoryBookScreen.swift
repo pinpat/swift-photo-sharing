@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import RxSwift
 
 struct MemoryBookScreen: View {
     
@@ -15,7 +16,7 @@ struct MemoryBookScreen: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 1.0){
             List{
-               NavigationLink(destination: Albums()){
+                NavigationLink(destination: Albums()){
                     MenuItemView(title: "Memory Book")
                 }
                 NavigationLink(destination: ContributeScreen()){
@@ -30,7 +31,33 @@ struct MemoryBookScreen: View {
             }
             
             
-        }.navigationBarTitle("Yaad", displayMode: .inline)
+        }
+        .navigationBarTitle("Yaad", displayMode: .inline)
+        .onAppear(perform: {
+            Network.shared.apollo.fetch(query: FindAllAlbumQuery()){ result in
+                switch result {
+                case .success:
+                    guard let data = try? result.get().data else { return }
+                    self.store.albums = []
+                    if !data.findAllAlbum!.isEmpty {
+                        for album in data.findAllAlbum! {
+                            var images: [AlbumImage] = []
+                            for image in album.images! {
+                                images.append(AlbumImage(id: image!.id, url: image!.image.url, whoAudio: Audio(id: image!.audioWho?.id ?? "", url: image!.audioWho?.url ?? ""), whereAudio: Audio(id: image!.audioWhere?.id ?? "", url: image!.audioWhere?.url ?? ""), whenAudio: Audio(id: image!.audioWhen?.id ?? "", url: image!.audioWhen?.url ?? "")))
+                            }
+                            if images.count > 0 {
+                                self.store.albums.append(Album(id: album.id, title: album.name, image: images.first!.url, images: images))
+                            }else{
+                                self.store.albums.append(Album(id: album.id, title: album.name, image: "", images: images))
+                            }
+                        }
+                        print(self.store.albums)
+                    }
+                case .failure:
+                    print(result)
+                }
+            }
+        })
     }
 }
 

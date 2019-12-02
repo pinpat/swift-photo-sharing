@@ -3,4 +3,54 @@
    uuid = "F51B3023-24F6-4538-BBA4-4CE5BA1A1C66"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "23870CD2-C5F7-4245-AC6F-B2F5D86E265E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../Library/Developer/Xcode/DerivedData/memories-guzioqxkeslufggmragbqrznqoau/SourcePackages/checkouts/apollo-ios/Sources/Apollo/HTTPNetworkTransport.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "423"
+            endingLineNumber = "423"
+            landmarkName = "createRequest(for:files:httpMethod:sendQueryDocument:autoPersistQueries:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B5025F53-4148-480A-A2C0-EBFD6ED7A9AF"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../Library/Developer/Xcode/DerivedData/memories-guzioqxkeslufggmragbqrznqoau/SourcePackages/checkouts/apollo-ios/Sources/Apollo/HTTPNetworkTransport.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "422"
+            endingLineNumber = "422"
+            landmarkName = "createRequest(for:files:httpMethod:sendQueryDocument:autoPersistQueries:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3A44CDD9-7252-4D3B-AD80-549F83D6ECF5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../Library/Developer/Xcode/DerivedData/memories-guzioqxkeslufggmragbqrznqoau/SourcePackages/checkouts/apollo-ios/Sources/Apollo/HTTPNetworkTransport.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "421"
+            endingLineNumber = "421"
+            landmarkName = "createRequest(for:files:httpMethod:sendQueryDocument:autoPersistQueries:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

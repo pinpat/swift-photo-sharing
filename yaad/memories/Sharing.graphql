@@ -1,0 +1,35 @@
+query findAllAlbumByAuthor{
+  findAllAlbumByAuthor{
+    name
+    images{
+      image{
+        name
+      }
+      audioWho{
+        name
+      }
+      audioWhen{
+                name
+      }
+      audioWhere{
+        name
+      }
+    }
+    created
+  }
+}
+
+mutation addAlbumShare($shareCode: String!){
+  addAlbumShare(shareCode: $shareCode){
+    id
+    album{
+      name
+      created
+      author{
+        firstName
+        lastName
+      }
+    }
+    created
+  }
+}

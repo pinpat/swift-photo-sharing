@@ -33,6 +33,7 @@ struct RegisterScreen: View {
                     TextField("Email", text: $email)
                         .padding()
                         .shadow(radius: 8)
+                        .autocapitalization(.none)
                     if !isValidEmail(emailStr: self.email) && self.onChange {
                         Text("Email is invalid!")
                             .foregroundColor(.red)

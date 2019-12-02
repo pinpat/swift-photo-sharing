@@ -1,6 +1,7 @@
-import { gql } from "apollo-server-express";
-
-export const schema = gql`
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const apollo_server_express_1 = require("apollo-server-express");
+exports.schema = apollo_server_express_1.gql `
     enum Role{
         administrator
         authenticated
@@ -23,11 +24,11 @@ export const schema = gql`
 
     type User {
         id: ID!
-        firstName: String
-        lastName: String
+        firstName: String!
+        lastName: String!
         email: String!
         roles: [String]!
-        phone: String
+        phone: String!
         created: DateTime!
     }
 
@@ -43,8 +44,11 @@ export const schema = gql`
     }
 
     input NewUser{
+        firstName: String!
+        lastName: String!
         email: String!
         password: String!
+        phone: String!
     }
 
     type Image{
@@ -80,7 +84,7 @@ export const schema = gql`
         findAllImage: [Image!] @hasRole(roles: [authenticated])
         findAllAlbumByAuthor: [Album!] @hasRole(roles: [authenticated])
     }
-    
+
     type Mutation {
         register(input: NewUser!): User!
         login(email: String!, password: String!): Token!
@@ -93,7 +97,7 @@ export const schema = gql`
         deleteImage(id: ID!): Image! @hasRole(roles: [authenticated])
         findImage(id: ID!): Image! @hasRole(roles: [authenticated])
         addAlbumShare(shareCode: String!): Sharing! @hasRole(roles: [authenticated])
-        generateURL(name: String!): Attachment! @hasRole(roles: [authenticated])
     }
 
 `;
+//# sourceMappingURL=schema.js.map

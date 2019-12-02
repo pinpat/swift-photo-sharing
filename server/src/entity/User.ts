@@ -10,13 +10,13 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({nullable: true})
     firstName: string;
 
-    @Column()
+    @Column({nullable: true})
     lastName: string;
 
-    @Column()
+    @Column({nullable: true})
     phone: string;
 
     @Index('email_idx', {unique: true})
@@ -57,14 +57,11 @@ export class User extends BaseEntity {
     }
 
     public static async NewUser(input: any) {
-        const {firstName, lastName, email, phone, password} = input;
+        const {email, password} = input;
         const obj = new User();
         const hashedPassword = await bcrypt.hash(password, 10);
-        obj.lastName = lastName;
-        obj.firstName = firstName;
         obj.email = email;
         obj.password = hashedPassword;
-        obj.phone = phone;
         obj.roles = ["authenticated"];
         await obj.save();
         if (obj.id === 1) {
