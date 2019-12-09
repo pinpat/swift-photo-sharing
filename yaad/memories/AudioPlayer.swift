@@ -54,4 +54,15 @@ class AudioPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
         }
     }
     
+    func downloadFileFromURL(url:URL,callback:@escaping (URL?)-> Void){
+        var downloadTask:URLSessionDownloadTask
+        downloadTask = URLSession.shared.downloadTask(with: url, completionHandler: {(URL, response, error) -> Void in
+//            self?.startPlayback(audio: URL!)
+            if URL != nil {
+                callback(URL!)
+            }
+        })
+
+        downloadTask.resume()
+    }
 }

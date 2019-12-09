@@ -14,22 +14,31 @@ struct Albums: View {
     @State private var isOpenAlert = false
     @State private var newAlbumTitle: String = ""
     @EnvironmentObject var store: Store
-    
+    @State var isActive: Bool = false
     var body: some View{
         GeometryReader { geometry in
             ScrollView(Axis.Set.vertical) {
             VStack(alignment: .leading, spacing: 2){
-                ForEach(0..<self.store.albums.count) { index in
+                ForEach(0..<self.store.albums.count, id: \.self) { index in
                     NavigationLink(destination: AlbumDetailScreen(album: self.store.albums[index], albumIndex: index)){
                         ZStack(alignment: .center){
-                            ImageLoader(imageURL: URL(string: self.store.albums[index].image))
+                            if self.store.albums[index].image == "" {
+                                Image("placeholder")
                                 .frame(width: geometry.size.width, height: 250, alignment: .center)
-                            .aspectRatio(contentMode: .fill)
-                            .clipped()
-                            
-                            Text(self.store.albums[index].title)
+                                .aspectRatio(contentMode: .fill)
+                                .clipped()
+                                Text(self.store.albums[index].title)
+                                .font(.headline)
+                                .foregroundColor(.black)
+                            }else{
+                                ImageLoader(imageURL: URL(string: self.store.albums[index].image))
+                                .frame(width: geometry.size.width, height: 250, alignment: .center)
+                                .aspectRatio(contentMode: .fill)
+                                .clipped()
+                                Text(self.store.albums[index].title)
                                 .font(.headline)
                                 .foregroundColor(.white)
+                            }
                         }
                     }
                     .buttonStyle(PlainButtonStyle())
@@ -56,11 +65,16 @@ struct Albums: View {
                         
                         if(self.$newAlbumTitle.wrappedValue != ""){
                             // handle create new album
-                            let newAlbum = Album(id: UUID().uuidString, title: self.$newAlbumTitle.wrappedValue, image: "https://cdn.pixabay.com/photo/2019/11/12/14/58/sunflower-4621237_1280.jpg", images: [])
-                            self.store.albums.append(newAlbum)
-                        
-                            
-            
+                            Network.shared.apollo.perform(mutation: SaveAlbumMutation(name: self.$newAlbumTitle.wrappedValue)){ result in
+                                switch result {
+                                    case .success:
+                                        let newAlbum = Album(id: UUID().uuidString, title: self.$newAlbumTitle.wrappedValue, image: "", images: [])
+                                        self.store.albums.append(newAlbum)
+                                        
+                                    case .failure:
+                                        print(result)
+                                }
+                            }
                         }
                     }){
                         Text("Continue")

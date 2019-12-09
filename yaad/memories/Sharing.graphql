@@ -25,10 +25,6 @@ mutation addAlbumShare($shareCode: String!){
     album{
       name
       created
-      author{
-        firstName
-        lastName
-      }
     }
     created
   }

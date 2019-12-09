@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct LoginScreen: View {
-    @State var email: String = ""
-    @State var password: String = ""
+    @State var email: String = "caotin123@gmail.com"
+    @State var password: String = "123"
     @Binding var isLogin: Bool
     @State var onChange: Bool = false
     @Binding var isScreenLogin: Bool

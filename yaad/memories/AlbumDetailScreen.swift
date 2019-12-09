@@ -8,88 +8,106 @@
 
 import SwiftUI
 import URLImage
-
+import Alamofire
 
 struct AlbumDetailScreen: View{
     @State var album: Album
     @State var showAction: Bool = false
     @State var showImagePicker: Bool = false
     @State var image: Image? = nil
+    @State var uiImage: UIImage? = nil
     @State var showCamera: Bool = false
     @EnvironmentObject var store: Store
     @State var albumIndex: Int = 0
-    
+    @State var isActive: Bool = false
     var body: some View {
         VStack{
             
             VStack {
-                Button(action:{
-                    withAnimation{
-                        
-                    }
-                }){
-                    Text("Save")
-                        .frame(width: UIScreen.main.bounds.width,alignment: .center)
-                        .padding()
-                        .background(Color.gray)
-                        .foregroundColor(.black)
-                        .font(.body)
-                }
-                
-                self.image?.resizable().frame(width: 100, height: 100)
-                
-                Button(action:{
-                    withAnimation{
-                        self.showImagePicker = true
-                    }
-                }){
-                    Text("Select From Gallery")
-                        .frame(width: UIScreen.main.bounds.width,alignment: .center)
-                        .padding()
-                        .background(Color.gray)
-                        .foregroundColor(.black)
-                        .font(.body)
-                }
-                .sheet(isPresented: $showImagePicker, onDismiss: {
-                    if(self.image != nil){
-                        let newImage = AlbumImage(id: "009", url: "", imageData: self.image)
-                        self.album.images.append(newImage)
-                        self.store.albums[self.albumIndex].images.append(newImage)
-                        print(self.album.images.count)
-                        self.image = nil
-//                        print(self.store.albums[self.albumIndex].images)
-                    }
-                }){
-                    ImagePicker(image: self.$image)
-                }
-
-                Button(action:{
-                    withAnimation{
-                        self.showCamera = true
-                    }
-                }){
-                    Text("Take Photo")
-                        .frame(width: UIScreen.main.bounds.width,alignment: .center)
-                        .padding()
-                        .background(Color.gray)
-                        .foregroundColor(.black)
-                        .font(.body)
-                }
-                .sheet(isPresented: self.$showCamera, onDismiss: {
-                    self.showCamera = false
-                }, content: {
-                    CameraView(showCameraView: self.$showCamera, pickedImage: self.$image)
-                })
                 VStack{
-                    FlowStack(columns: 3, numItems: self.store.albums[self.albumIndex].images.count, alignment: .leading) { index, colWidth in
-                        NavigationLink(destination: AlbumImageDetailScreen(album: self.album, selectedIndex: index)){
-                            if index < self.album.images.count {
+                    Button(action:{
+                        let myGroup = DispatchGroup()
+
+                        for i in 0 ..< self.album.images.count {
+                            myGroup.enter()
+                            if self.album.images[i].imageData != nil && self.album.images[i].url == "" {
+                                Network.shared.uploadFile(image: self.album.images[i].imageData!, data: nil, completion: { result in
+                                    if result != nil {
+                                        let rs = result!
+                                        Network.shared.apollo.perform(mutation: SaveImageMutation(imageId: String(rs.id), albumId: self.album.id)){ response in
+                                            let data = try? response.get().data
+                                            if data?.saveImage != nil {
+                                                self.album.images[i] = AlbumImage(id: data?.saveImage?.image.id ?? "", url: rs.url)
+                                                self.store.albums[self.albumIndex].images[i] = AlbumImage(id: data?.saveImage?.image.id ?? "", url: rs.url)
+                                                if(i==0){
+                                                    self.store.albums[self.albumIndex].image =  rs.url
+                                                }
+                                            }
+                                            myGroup.leave()
+                                        }
+                                    }
+                                })
+                            }
+                        }
+
+                        myGroup.notify(queue: .main) {
+                            print("Finished all requests.")
+                        }
+                    }){
+                        Text("Save")
+                            .frame(width: UIScreen.main.bounds.width,alignment: .center)
+                            .padding()
+                            .background(Color.init(red: 202/255, green: 204/255, blue: 206/255))
+                            .foregroundColor(.black)
+                            .font(.body)
+                    }
+
+                    Button(action:{
+                        withAnimation{
+                            self.showImagePicker = true
+                        }
+                    }){
+                        Text("Select From Gallery")
+                            .frame(width: UIScreen.main.bounds.width,alignment: .center)
+                            .padding()
+                            .background(Color.init(red: 202/255, green: 204/255, blue: 206/255))
+                            .foregroundColor(.black)
+                            .font(.body)
+                    }
+                    .sheet(isPresented: $showImagePicker, onDismiss: {
+                        if(self.uiImage != nil){
+                            let newImage = AlbumImage(id: "abc", url: "", imageData: self.uiImage)
+                            self.album.images.append(newImage)
+                            self.store.albums[self.albumIndex].images.append(newImage)
+                            print(self.album.images.count)
+                            self.uiImage = nil
+                        }
+                    }){
+                        ImagePicker(uiImage: self.$uiImage)
+                    }
+
+                    Button(action:{
+                        withAnimation{
+                            self.showCamera = true
+                        }
+                    }){
+                        Text("Take Photo")
+                            .frame(width: UIScreen.main.bounds.width,alignment: .center)
+                            .padding()
+                            .background(Color.init(red: 202/255, green: 204/255, blue: 206/255))
+                            .foregroundColor(.black)
+                            .font(.body)
+                    }
+                    .sheet(isPresented: self.$showCamera, onDismiss: {
+                        self.showCamera = false
+                    }, content: {
+                        CameraView(showCameraView: self.$showCamera, pickedImage: self.$image)
+                    })
+                }
+                VStack{
+                    FlowStack(columns: 3, numItems: self.album.images.count, alignment: .leading) { index, colWidth in
+                        NavigationLink(destination: AlbumImageDetailScreen(album: self.$album, selectedIndex: index, isActive: self.$isActive), isActive: self.$isActive){
                                 if self.album.images[index].url != "" {
-                                    /*ImageLoader(imageURL: URL(string: self.album.images[index].url))
-                                    .frame(width: colWidth, height: colWidth, alignment: .center)
-                                    .aspectRatio(contentMode: .fill)
-                                    .clipped()*/
-                                   
                                     URLImage(URL(string: self.album.images[index].url)!,
                                     delay: 0.25,
                                     processors: [ Resize(size: CGSize(width: colWidth, height: colWidth), scale: UIScreen.main.scale) ],
@@ -100,22 +118,19 @@ struct AlbumDetailScreen: View{
                                         .clipped()
                                     })
                                         .frame(width: colWidth, height: colWidth)
-                                    
-                                    
                                 }else{
-                                    self.album.images[index].imageData?.resizable()
-                                    .frame(width: colWidth, height: colWidth, alignment: .center)
+                                    Image(uiImage: self.album.images[index].imageData!)
+                                    .resizable().frame(width: colWidth, height: colWidth, alignment: .center)
                                     .aspectRatio(contentMode: .fill)
                                     .clipped()
                                 }
-                            }
                         }
                         .buttonStyle(PlainButtonStyle())
                         .padding(.horizontal, 2)
                         .padding(.vertical, 2)
                         .frame(width: colWidth, height: colWidth)
 
-                    }.padding(2)
+                    }
                         .navigationBarTitle(album.title)
                 }
             }
@@ -125,7 +140,7 @@ struct AlbumDetailScreen: View{
 
 struct AlbumDetailScreen_Previews: PreviewProvider {
     static var previews: some View {
-        AlbumDetailScreen(album: Store().albums[0])
+        AlbumDetailScreen(album: Store().albums[0], albumIndex: 0)
     }
 }
 

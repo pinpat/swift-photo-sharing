@@ -16,7 +16,7 @@ export class Sharing extends BaseEntity {
 
     @ManyToOne(
         () => Album,
-        album => album.id,
+        album => album.shareCode,
         {
             cascade: true,
             onDelete: "CASCADE"

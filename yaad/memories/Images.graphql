@@ -7,9 +7,19 @@ query findAllImage{
   }
 }
 
+mutation saveAudio($id: ID!, $audioId: ID!, $type: String!){
+  saveAudio(id: $id audioId: $audioId type:$type){
+    image{
+        id
+        name
+    }
+  }
+}
+
 mutation saveImage($imageId: ID!, $albumId: ID!){
   saveImage(imageId: $imageId albumId: $albumId){
     image{
+        id
         name
     }
   }
@@ -35,10 +45,6 @@ mutation findAlbumById($id: ID!){
     }
     shareCode
       created
-    author{
-      firstName
-      lastName
-    }
   }
 }
 
@@ -52,6 +58,38 @@ mutation findAllImageByAlbumId($albumId: ID!){
     album{
       id
       name
+    }
+  }
+}
+
+mutation deleteImage($id: ID!){
+  deleteImage(id: $id){
+    id
+  }
+}
+
+mutation findImage($id: ID!){
+  findImage(id: $id){
+    id
+    image{
+      id
+      name
+      url
+    }
+    audioWho{
+      id
+      name
+      url
+    }
+    audioWhen{
+      id
+      name
+      url
+    }
+    audioWhere{
+      id
+      name
+      url
     }
   }
 }

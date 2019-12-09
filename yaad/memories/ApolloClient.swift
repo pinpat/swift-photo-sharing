@@ -26,6 +26,21 @@ class UserManager: NSObject {
     
 }
 
+public struct AuthorResponseData: Decodable{
+    var id: Int
+    var email: String
+}
+
+public struct FileResponseData: Decodable {
+    var id: Int
+    var name: String
+    var originalName: String
+    var contentType: String
+    var size: Int
+    var author: AuthorResponseData
+    var created: String
+    var url: String
+}
 // MARK: - Singleton Wrapper
 
 class Network {
@@ -36,24 +51,40 @@ class Network {
         url: URL(string: "\(self.url)/graphql")!,
         delegate: self
     )
-
+    
     // Use the configured network transport in your Apollo client.
     private(set) lazy var apollo = ApolloClient(networkTransport: self.networkTransport)
-
-    func uploadFile(image: UIImage, completion: (URL?) -> Void) {
-      Alamofire.upload(multipartFormData: { (form) in
-        form.append(image.pngData()!, withName: "file")
-      }, to: "\(self.url)/upload", encodingCompletion: { result in
-        switch result {
-        case .success(let upload, _, _):
-          upload.responseString { response in
-            print(response.value)
-          }
-        case .failure(let encodingError):
-          print(encodingError)
+    
+    func uploadFile(image: UIImage?, data:Data?, completion:@escaping (FileResponseData?) -> Void) {
+        let headers: HTTPHeaders = [
+            "Authorization": "Bearer \(UserManager.shared.currentAuthToken)"
+        ]
+        Alamofire.upload(multipartFormData: { form in
+            if image != nil {
+                form.append(image!.pngData()!, withName: "file",fileName: "file.png", mimeType: "image/png")
+            }
+            if data != nil {
+                form.append(data!, withName: "file",fileName: "file.mp3", mimeType: "audio/mpeg")
+            }
+        }, to: "\(self.url)/upload", headers: headers) { result in
+            switch result {
+            case .success(let upload, _, _):
+                upload.responseString { response in
+                    do {
+                        completion(try JSONDecoder().decode(FileResponseData.self, from: (response.value?.data(using: .utf8))!))
+                    } catch let messs {
+                        print(messs)
+                        completion(nil)
+                    }
+                    
+                }
+            case .failure(let encodingError):
+                print(encodingError)
+                completion(nil)
+            }
         }
-      })
     }
+    
 }
 
 // MARK: - Pre-flight delegate

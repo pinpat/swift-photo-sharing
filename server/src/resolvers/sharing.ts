@@ -25,7 +25,7 @@ export const resolvers: IResolvers = {
                 throw new Error("Album not found!");
             }
             let sharing = await Sharing.findOne({
-                relations: ["album"],
+                relations: ["album","author"],
                 where: { author: { id: user.id }, album: {id: album.id}}
             });
 
@@ -34,10 +34,9 @@ export const resolvers: IResolvers = {
             }
 
             sharing = new Sharing();
-            sharing.author = user;
-            sharing.album = album;
-
-            return Sharing.save(sharing);
+            sharing.author = user
+            sharing.album = album
+            return Sharing.save(sharing)
         }
     }
 };

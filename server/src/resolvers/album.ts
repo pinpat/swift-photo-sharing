@@ -4,6 +4,7 @@ import { Attachment } from "../entity/Attachment";
 import {generateFileUrl} from "../file";
 import moment from "moment";
 import { Image } from "../entity/Image";
+import { Sharing } from "../entity/Sharing";
 
 export const resolvers: IResolvers = {
     Query: {
@@ -26,6 +27,22 @@ export const resolvers: IResolvers = {
                     }
                 }
             });
+            
+            const sharing = await Sharing.find({
+                relations: [
+                    "album", 
+                    "author",
+                    "album.author",
+                    "album.images",
+                    "album.images.image",
+                    "album.images.audioWho",
+                    "album.images.audioWhen",
+                    "album.images.audioWhere"
+                ],
+                where: { author: { id: user.id } }
+            });
+
+            albums = [...albums, ...sharing.map(item=>item.album)]
             albums.map(album => {
                 if(album.images.length){
                     album.images = album.images.map((image: Image) => {
@@ -43,6 +60,8 @@ export const resolvers: IResolvers = {
                     })
                 }
             })
+            albums[0].images.map(item => console.log(item))
+            
             return albums
         }
     },

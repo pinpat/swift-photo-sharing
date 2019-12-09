@@ -2,6 +2,7 @@ query findAllAlbum{
   findAllAlbum{
     id
     name
+    shareCode
     created
     images{
       id
@@ -34,8 +35,6 @@ mutation saveAlbum($name: String!){
     name
     author{
       id
-      firstName
-      lastName
     }
   }
 }
