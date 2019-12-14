@@ -28,7 +28,6 @@ struct ContentView: View {
                     NavigationLink(destination: MemoryBookScreen()){
                         BlockView(title: "Memory Book", backgroundColor:Color("Primary"))
                     }
-                    
                     NavigationLink(destination: CreatorScreen()){
                         BlockView(title: "Creator", backgroundColor:Color("Gray"))
                     }

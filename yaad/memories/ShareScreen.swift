@@ -112,8 +112,10 @@ struct ShareScreen: View {
             .padding()
             .border(Color.primary, width: 1)
             .onAppear(){
-                self.code = self.store.albums.first!.shareCode ?? ""
-                self.url = self.store.albums.first!.image
+                if self.store.albums.count > 0 {
+                    self.code = self.store.albums.first!.shareCode ?? ""
+                    self.url = self.store.albums.first!.image
+                }
             }
         }
         .frame(minWidth: 0, idealWidth: 0, maxWidth: .infinity, minHeight: 0, idealHeight: 0, maxHeight: .infinity, alignment: .topLeading)

@@ -60,7 +60,6 @@ export const resolvers: IResolvers = {
                     })
                 }
             })
-            albums[0].images.map(item => console.log(item))
             
             return albums
         }
@@ -115,8 +114,8 @@ export const resolvers: IResolvers = {
 
             return await album.remove();
         },
-        findAlbumById: async (_, { id }, { user }) => {
-            return await Album.findOne({
+        findAlbumById: async (_, { id }) => {
+            const album: Album | undefined = await Album.findOne({
                 relations: [
                     "author",
                     "images",
@@ -125,8 +124,15 @@ export const resolvers: IResolvers = {
                     "images.audioWhere",
                     "images.audioWho"
                 ],
-                where: { id, author: { id: user.id }, images: { id: user.id } }
+                where: { id }
             });
+            if (album) {
+                album.images = album.images.map(image => {
+                    image.image.url = generateFileUrl(image.image.name, moment().add('1', 'day').unix())
+                    return image
+                })
+            }
+            return album
         }
     }
 };

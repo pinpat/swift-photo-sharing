@@ -6,7 +6,7 @@ import express from "express";
 import multer from "multer";
 import corsMiddleware from 'cors'
 import {schema} from "./schema";
-import {PORT} from "./config";
+import {PORT, UPLOAD_DIR} from "./config";
 import {getTokenFromRequest, getUserIdFromToken} from "./auth";
 import {User} from "./entity/User";
 import http from 'http'
@@ -64,7 +64,7 @@ const startServer = async () => {
 
     const storage = multer.diskStorage({
         destination: function (_req: any, _file: any, cb) {
-            cb(null, './storage')
+            cb(null, UPLOAD_DIR)
         },
         filename: function (_req, file, cb) {
             cb(null, `${v4()}-${file.originalname}`);

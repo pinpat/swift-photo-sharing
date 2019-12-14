@@ -13,14 +13,14 @@ import Combine
 struct AlbumImageDetailScreen: View {
     @Binding var album: Album
     @State var selectedIndex: Int = 0
+    @State var image: AlbumImage = AlbumImage(id: "", url: "")
     @State private var isFullScreen = false
     @State private var isOpenAudioScreen: Bool = false
-    @State var selectedAudio: Audio?
     @State private var controlers: [UIViewController] = []
     @State private var showAction: Bool = false
     @EnvironmentObject var store: Store
-    @State var type: String = "audioWho"
-    @Binding var isActive: Bool
+    @State var type: String = ""
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
 
     var sheet: ActionSheet {
         ActionSheet(
@@ -35,7 +35,7 @@ struct AlbumImageDetailScreen: View {
                         switch result {
                         case .success:
                             self.album.images.remove(at: self.selectedIndex)
-                            self.isActive = false
+                            self.presentationMode.wrappedValue.dismiss()
                         case.failure:
                             print(result)
                         }
@@ -52,31 +52,33 @@ struct AlbumImageDetailScreen: View {
                 PageViewController(controllers: controlers, currentPage: $selectedIndex)
             }
         }
-        .onAppear(){
-            if self.controlers.isEmpty{
-                self.controlers = self.album.images.enumerated().map{(index, AlbumImage) in
-                    UIHostingController(rootView: ImageDetailView(album: self.album, selectedIndex: index, isOpenAudioScreen: self.$isOpenAudioScreen, type: self.$type, audio: self.$selectedAudio))
-                }
-            }
-        }
         .navigationBarItems(trailing: Button(action: {
             self.showAction.toggle()
         }){
-            Text("Delete")
+            if self.store.isMemoryBook {
+                Text("Delete")
+            }
         }).sheet(isPresented: $isOpenAudioScreen,onDismiss: {
             Network.shared.apollo.perform(mutation: FindImageMutation(id: self.album.images[self.selectedIndex].id)){result in
                 guard let data = try? result.get().data else { return }
-                print(data)
-                let image = AlbumImage(id: data.findImage.id, url: data.findImage.image.url, whoAudio: Audio(id: data.findImage.audioWho?.id ?? "", url: data.findImage.audioWho?.url ?? ""), whereAudio: Audio(id: data.findImage.audioWhere?.id ?? "", url: data.findImage.audioWhere?.url ?? ""), whenAudio: Audio(id: data.findImage.audioWhen?.id ?? "", url: data.findImage.audioWhen?.url ?? ""))
-                self.album.images[self.selectedIndex] = image
-                print(self.album)
+
+                self.album.images[self.selectedIndex] = AlbumImage(id: data.findImage.id, url: data.findImage.image.url, whoAudio: Audio(id: data.findImage.audioWho?.id ?? "", url: data.findImage.audioWho?.url ?? ""), whereAudio: Audio(id: data.findImage.audioWhere?.id ?? "", url: data.findImage.audioWhere?.url ?? ""), whenAudio: Audio(id: data.findImage.audioWhen?.id ?? "", url: data.findImage.audioWhen?.url ?? ""))
             }
+           
         }){
-            AlbumImageAudioScreen(audio: self.$selectedAudio, album: self.album, type: self.type, selectedIndex: self.selectedIndex)
+            AlbumImageAudioScreen(isMemoryBook: self.store.isMemoryBook, image: self.album.images[self.selectedIndex], type: self.type)
         }
         .actionSheet(isPresented: self.$showAction, content: {
             sheet
         })
+        .onAppear(){
+            if self.controlers.isEmpty{
+                self.controlers = self.album.images.enumerated().map{(index, AlbumImage) in
+                    UIHostingController(rootView: ImageDetailView(album: self.album, selectedIndex: index, isOpenAudioScreen: self.$isOpenAudioScreen, type: self.$type))
+                }
+            }
+        }
+        
     }
 }
 
@@ -86,8 +88,8 @@ struct ImageDetailView: View{
     var selectedIndex: Int = 0
     @Binding var isOpenAudioScreen: Bool
     @Binding var type: String
-    @Binding var audio: Audio?
-    
+    @EnvironmentObject var store: Store
+
     var body: some View{
         VStack{
             if self.album.images[self.selectedIndex].url != "" {
@@ -103,9 +105,7 @@ struct ImageDetailView: View{
             HStack(alignment: .center, spacing: 30){
                 
                 Button(action: {
-                    self.audio = self.album.images[self.selectedIndex].whoAudio
                     self.type = "audioWho"
-                    print(self.album)
                     self.isOpenAudioScreen.toggle()
                 }){
                     Text("Who")
@@ -114,7 +114,6 @@ struct ImageDetailView: View{
                 }
                 
                 Button(action: {
-                    self.audio = self.album.images[self.selectedIndex].whereAudio
                     self.type = "audioWhere"
                     self.isOpenAudioScreen.toggle()
                     
@@ -125,7 +124,6 @@ struct ImageDetailView: View{
                 }
                 
                 Button(action: {
-                    self.audio = self.album.images[self.selectedIndex].whenAudio
                     self.type = "audioWhen"
                     self.isOpenAudioScreen.toggle()
                 }){

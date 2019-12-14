@@ -34,6 +34,7 @@ struct MemoryBookScreen: View {
         .navigationBarTitle("Yaad", displayMode: .inline)
         .onAppear(perform: {
             self.store.onLoadData()
+            self.store.isMemoryBook = true
         })
     }
 }

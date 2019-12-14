@@ -45,7 +45,7 @@ public struct FileResponseData: Decodable {
 
 class Network {
     static let shared = Network()
-    var url = "http://localhost:4000"
+    var url = "https://yaadapp.com"
     // Configure the network transport to use the singleton as the delegate.
     private lazy var networkTransport = HTTPNetworkTransport(
         url: URL(string: "\(self.url)/graphql")!,

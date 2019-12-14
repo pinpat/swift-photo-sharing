@@ -35,7 +35,6 @@
 		5464235B238E1C6B00FCB828 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 5464235A238E1C6B00FCB828 /* URLImage */; };
 		784A81672387DADE0082AF00 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784A81662387DADE0082AF00 /* ImagePicker.swift */; };
 		784A81692387DC6C0082AF00 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784A81682387DC6C0082AF00 /* CameraView.swift */; };
-		784C46702394C1DB002BD9A8 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784C466F2394C1DB002BD9A8 /* API.swift */; };
 		784C467223965BDB002BD9A8 /* SelectAlbumShareViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784C467123965BDB002BD9A8 /* SelectAlbumShareViewer.swift */; };
 		784C467A23975264002BD9A8 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784C467923975264002BD9A8 /* Toast.swift */; };
 		784C467C23979009002BD9A8 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 784C467B23979009002BD9A8 /* AudioRecorder.swift */; };
@@ -50,6 +49,7 @@
 		78B257BB239218F100304E12 /* Attachment.graphql in Resources */ = {isa = PBXBuildFile; fileRef = 78B257BA239218F100304E12 /* Attachment.graphql */; };
 		78B257C123921C0900304E12 /* schema.json in Resources */ = {isa = PBXBuildFile; fileRef = 78B257C023921C0900304E12 /* schema.json */; };
 		78B257CA239283D000304E12 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 78B257C9239283D000304E12 /* Alamofire */; };
+		78F6509F239F55F6001B7CAB /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78F6509E239F55F6001B7CAB /* API.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,7 +82,6 @@
 		545EE9D3237C50E500D532B0 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 		784A81662387DADE0082AF00 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		784A81682387DC6C0082AF00 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		784C466F2394C1DB002BD9A8 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		784C467123965BDB002BD9A8 /* SelectAlbumShareViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAlbumShareViewer.swift; sourceTree = "<group>"; };
 		784C467923975264002BD9A8 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		784C467B23979009002BD9A8 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
@@ -95,6 +94,7 @@
 		78B257B023910D0400304E12 /* Sharing.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = Sharing.graphql; sourceTree = "<group>"; };
 		78B257BA239218F100304E12 /* Attachment.graphql */ = {isa = PBXFileReference; lastKnownFileType = text; path = Attachment.graphql; sourceTree = "<group>"; };
 		78B257C023921C0900304E12 /* schema.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
+		78F6509E239F55F6001B7CAB /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,7 +130,7 @@
 		5440F010237BDF79000EDD1A /* memories */ = {
 			isa = PBXGroup;
 			children = (
-				784C466F2394C1DB002BD9A8 /* API.swift */,
+				78F6509E239F55F6001B7CAB /* API.swift */,
 				78B257C023921C0900304E12 /* schema.json */,
 				78B257AA238FBCF700304E12 /* ApolloClient.swift */,
 				78B257A4238FAACE00304E12 /* User.graphql */,
@@ -298,7 +298,6 @@
 				78B257AB238FBCF700304E12 /* ApolloClient.swift in Sources */,
 				541626AA237D62AF00783862 /* PageControl.swift in Sources */,
 				78610291238E350B0082AB6D /* LoginScreen.swift in Sources */,
-				784C46702394C1DB002BD9A8 /* API.swift in Sources */,
 				784C467A23975264002BD9A8 /* Toast.swift in Sources */,
 				5416269A237D04D500783862 /* ShareScreen.swift in Sources */,
 				541626A2237D434F00783862 /* AlbumImageDetailScreen.swift in Sources */,
@@ -316,6 +315,7 @@
 				541626A6237D4E0F00783862 /* FlowStack.swift in Sources */,
 				541626A0237D340400783862 /* Store.swift in Sources */,
 				543B5A26237E94DB00D6AEA9 /* ImageLoader.swift in Sources */,
+				78F6509F239F55F6001B7CAB /* API.swift in Sources */,
 				541626A4237D4C9600783862 /* AlbumDetailScreen.swift in Sources */,
 				54162698237CF74600783862 /* ContributeScreen.swift in Sources */,
 				545EE9D4237C50E500D532B0 /* Utility.swift in Sources */,

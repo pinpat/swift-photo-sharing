@@ -81,6 +81,27 @@ export const resolvers: IResolvers = {
             if (!audio) {
                 throw new Error("File not found");
             }
+            console.log(type,image);
+            
+            switch (type) {
+                case "audioWhen":
+                    if(image.audioWhen){
+                        await new Attachment().removeFile([image.audioWhen.id])
+                    }
+                    break;
+                case "audioWhere":
+                    if(image.audioWhere){
+                        await new Attachment().removeFile([image.audioWhere.id])
+                    }
+                    break;
+                case "audioWho":
+                    if (image.audioWho) {
+                        await new Attachment().removeFile([image.audioWho.id])
+                    }
+                break;
+                default:
+                    break;
+            }
 
             let newAudio = { ...image, [type]: audio };
             image.audioWhen = newAudio.audioWhen
@@ -112,7 +133,7 @@ export const resolvers: IResolvers = {
             
             return {...result, id: 0}
         },
-        findImage: async (_, { id }, { user }) => {
+        findImage: async (_, { id }) => {
             const image = await Image.findOne({
                 relations: [
                     "image",
@@ -122,7 +143,7 @@ export const resolvers: IResolvers = {
                     "audioWhen",
                     "audioWhere"
                 ],
-                where: { id, author: { id: user.id } }
+                where: { id }
             });
             if(!image){
                 throw new Error("Image not found!")

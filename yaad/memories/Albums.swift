@@ -50,7 +50,9 @@ struct Albums: View {
             .navigationBarItems(trailing: Button(action: {
                 self.isOpenAlert.toggle()
             }){
-                Text("Add")
+                if self.store.isMemoryBook {
+                    Text("Add")
+                }
             })
                 .padding(2).sheet(isPresented: self.$isOpenAlert) {
                 VStack(alignment: .leading, spacing: 10){
@@ -60,20 +62,13 @@ struct Albums: View {
                     .padding()
                         .border(Color.primary, width: 1)
                     Button(action: {
+                         print(geometry.size.width)
                         self.isOpenAlert.toggle()
-                        print(self.$newAlbumTitle)
-                        
                         if(self.$newAlbumTitle.wrappedValue != ""){
                             // handle create new album
                             Network.shared.apollo.perform(mutation: SaveAlbumMutation(name: self.$newAlbumTitle.wrappedValue)){ result in
-                                switch result {
-                                    case .success:
-                                        let newAlbum = Album(id: UUID().uuidString, title: self.$newAlbumTitle.wrappedValue, image: "", images: [])
-                                        self.store.albums.append(newAlbum)
-                                        
-                                    case .failure:
-                                        print(result)
-                                }
+                                guard let data = try? result.get().data else { return }
+                                self.store.albums.append(Album(id: data.saveAlbum.id, title: data.saveAlbum.name, image: "", images: []))
                             }
                         }
                     }){

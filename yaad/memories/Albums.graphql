@@ -32,6 +32,7 @@ query findAllAlbum{
 
 mutation saveAlbum($name: String!){
   saveAlbum(name: $name){
+    id
     name
     author{
       id
@@ -42,5 +43,35 @@ mutation saveAlbum($name: String!){
 mutation deleteAlbum($id: ID!){
   deleteAlbum(id: $id){
     name
+  }
+}
+
+mutation findAlbumById($albumId: ID!){
+  findAlbumById(id: $albumId){
+
+    id
+    name
+    images{
+      id
+      image{
+        id
+        name
+        url
+      }
+      audioWho{
+        id
+        name
+      }
+      audioWhen{
+        id
+        name
+      }
+      audioWhere{
+        id
+        name
+      }
+    }
+    shareCode
+    created
   }
 }

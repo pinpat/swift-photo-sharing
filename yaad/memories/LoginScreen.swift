@@ -14,6 +14,7 @@ struct LoginScreen: View {
     @Binding var isLogin: Bool
     @State var onChange: Bool = false
     @Binding var isScreenLogin: Bool
+    @EnvironmentObject var store: Store
     var body: some View {
         VStack{
             VStack{
@@ -58,6 +59,7 @@ struct LoginScreen: View {
                                         self.isLogin = true
                                         UserManager.shared.hasAuthenticatedUser = true
                                         UserManager.shared.currentAuthToken = data.login.id
+                                        self.store.onLoadData()
                                     case .failure:
                                         print(result)
                                 }

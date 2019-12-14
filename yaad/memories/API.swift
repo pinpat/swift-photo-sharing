@@ -468,6 +468,7 @@ public final class SaveAlbumMutation: GraphQLMutation {
     mutation saveAlbum($name: String!) {
       saveAlbum(name: $name) {
         __typename
+        id
         name
         author {
           __typename
@@ -520,6 +521,7 @@ public final class SaveAlbumMutation: GraphQLMutation {
 
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
         GraphQLField("name", type: .nonNull(.scalar(String.self))),
         GraphQLField("author", type: .nonNull(.object(Author.selections))),
       ]
@@ -530,8 +532,8 @@ public final class SaveAlbumMutation: GraphQLMutation {
         self.resultMap = unsafeResultMap
       }
 
-      public init(name: String, author: Author) {
-        self.init(unsafeResultMap: ["__typename": "Album", "name": name, "author": author.resultMap])
+      public init(id: GraphQLID, name: String, author: Author) {
+        self.init(unsafeResultMap: ["__typename": "Album", "id": id, "name": name, "author": author.resultMap])
       }
 
       public var __typename: String {
@@ -540,6 +542,15 @@ public final class SaveAlbumMutation: GraphQLMutation {
         }
         set {
           resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return resultMap["id"]! as! GraphQLID
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "id")
         }
       }
 
@@ -684,6 +695,438 @@ public final class DeleteAlbumMutation: GraphQLMutation {
         }
         set {
           resultMap.updateValue(newValue, forKey: "name")
+        }
+      }
+    }
+  }
+}
+
+public final class FindAlbumByIdMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition =
+    """
+    mutation findAlbumById($albumId: ID!) {
+      findAlbumById(id: $albumId) {
+        __typename
+        id
+        name
+        images {
+          __typename
+          id
+          image {
+            __typename
+            id
+            name
+            url
+          }
+          audioWho {
+            __typename
+            id
+            name
+          }
+          audioWhen {
+            __typename
+            id
+            name
+          }
+          audioWhere {
+            __typename
+            id
+            name
+          }
+        }
+        shareCode
+        created
+      }
+    }
+    """
+
+  public let operationName = "findAlbumById"
+
+  public var albumId: GraphQLID
+
+  public init(albumId: GraphQLID) {
+    self.albumId = albumId
+  }
+
+  public var variables: GraphQLMap? {
+    return ["albumId": albumId]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes = ["Mutation"]
+
+    public static let selections: [GraphQLSelection] = [
+      GraphQLField("findAlbumById", arguments: ["id": GraphQLVariable("albumId")], type: .object(FindAlbumById.selections)),
+    ]
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(findAlbumById: FindAlbumById? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "findAlbumById": findAlbumById.flatMap { (value: FindAlbumById) -> ResultMap in value.resultMap }])
+    }
+
+    public var findAlbumById: FindAlbumById? {
+      get {
+        return (resultMap["findAlbumById"] as? ResultMap).flatMap { FindAlbumById(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "findAlbumById")
+      }
+    }
+
+    public struct FindAlbumById: GraphQLSelectionSet {
+      public static let possibleTypes = ["Album"]
+
+      public static let selections: [GraphQLSelection] = [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("name", type: .nonNull(.scalar(String.self))),
+        GraphQLField("images", type: .list(.object(Image.selections))),
+        GraphQLField("shareCode", type: .nonNull(.scalar(String.self))),
+        GraphQLField("created", type: .nonNull(.scalar(String.self))),
+      ]
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(id: GraphQLID, name: String, images: [Image?]? = nil, shareCode: String, created: String) {
+        self.init(unsafeResultMap: ["__typename": "Album", "id": id, "name": name, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "shareCode": shareCode, "created": created])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return resultMap["id"]! as! GraphQLID
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var name: String {
+        get {
+          return resultMap["name"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "name")
+        }
+      }
+
+      public var images: [Image?]? {
+        get {
+          return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
+        }
+        set {
+          resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+        }
+      }
+
+      public var shareCode: String {
+        get {
+          return resultMap["shareCode"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "shareCode")
+        }
+      }
+
+      public var created: String {
+        get {
+          return resultMap["created"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "created")
+        }
+      }
+
+      public struct Image: GraphQLSelectionSet {
+        public static let possibleTypes = ["Image"]
+
+        public static let selections: [GraphQLSelection] = [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("image", type: .nonNull(.object(Image.selections))),
+          GraphQLField("audioWho", type: .object(AudioWho.selections)),
+          GraphQLField("audioWhen", type: .object(AudioWhen.selections)),
+          GraphQLField("audioWhere", type: .object(AudioWhere.selections)),
+        ]
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(id: GraphQLID, image: Image, audioWho: AudioWho? = nil, audioWhen: AudioWhen? = nil, audioWhere: AudioWhere? = nil) {
+          self.init(unsafeResultMap: ["__typename": "Image", "id": id, "image": image.resultMap, "audioWho": audioWho.flatMap { (value: AudioWho) -> ResultMap in value.resultMap }, "audioWhen": audioWhen.flatMap { (value: AudioWhen) -> ResultMap in value.resultMap }, "audioWhere": audioWhere.flatMap { (value: AudioWhere) -> ResultMap in value.resultMap }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var id: GraphQLID {
+          get {
+            return resultMap["id"]! as! GraphQLID
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var image: Image {
+          get {
+            return Image(unsafeResultMap: resultMap["image"]! as! ResultMap)
+          }
+          set {
+            resultMap.updateValue(newValue.resultMap, forKey: "image")
+          }
+        }
+
+        public var audioWho: AudioWho? {
+          get {
+            return (resultMap["audioWho"] as? ResultMap).flatMap { AudioWho(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "audioWho")
+          }
+        }
+
+        public var audioWhen: AudioWhen? {
+          get {
+            return (resultMap["audioWhen"] as? ResultMap).flatMap { AudioWhen(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "audioWhen")
+          }
+        }
+
+        public var audioWhere: AudioWhere? {
+          get {
+            return (resultMap["audioWhere"] as? ResultMap).flatMap { AudioWhere(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "audioWhere")
+          }
+        }
+
+        public struct Image: GraphQLSelectionSet {
+          public static let possibleTypes = ["Attachment"]
+
+          public static let selections: [GraphQLSelection] = [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+            GraphQLField("name", type: .nonNull(.scalar(String.self))),
+            GraphQLField("url", type: .nonNull(.scalar(String.self))),
+          ]
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(id: GraphQLID, name: String, url: String) {
+            self.init(unsafeResultMap: ["__typename": "Attachment", "id": id, "name": name, "url": url])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var id: GraphQLID {
+            get {
+              return resultMap["id"]! as! GraphQLID
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "id")
+            }
+          }
+
+          public var name: String {
+            get {
+              return resultMap["name"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "name")
+            }
+          }
+
+          public var url: String {
+            get {
+              return resultMap["url"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "url")
+            }
+          }
+        }
+
+        public struct AudioWho: GraphQLSelectionSet {
+          public static let possibleTypes = ["Attachment"]
+
+          public static let selections: [GraphQLSelection] = [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+            GraphQLField("name", type: .nonNull(.scalar(String.self))),
+          ]
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(id: GraphQLID, name: String) {
+            self.init(unsafeResultMap: ["__typename": "Attachment", "id": id, "name": name])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var id: GraphQLID {
+            get {
+              return resultMap["id"]! as! GraphQLID
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "id")
+            }
+          }
+
+          public var name: String {
+            get {
+              return resultMap["name"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "name")
+            }
+          }
+        }
+
+        public struct AudioWhen: GraphQLSelectionSet {
+          public static let possibleTypes = ["Attachment"]
+
+          public static let selections: [GraphQLSelection] = [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+            GraphQLField("name", type: .nonNull(.scalar(String.self))),
+          ]
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(id: GraphQLID, name: String) {
+            self.init(unsafeResultMap: ["__typename": "Attachment", "id": id, "name": name])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var id: GraphQLID {
+            get {
+              return resultMap["id"]! as! GraphQLID
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "id")
+            }
+          }
+
+          public var name: String {
+            get {
+              return resultMap["name"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "name")
+            }
+          }
+        }
+
+        public struct AudioWhere: GraphQLSelectionSet {
+          public static let possibleTypes = ["Attachment"]
+
+          public static let selections: [GraphQLSelection] = [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+            GraphQLField("name", type: .nonNull(.scalar(String.self))),
+          ]
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(id: GraphQLID, name: String) {
+            self.init(unsafeResultMap: ["__typename": "Attachment", "id": id, "name": name])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var id: GraphQLID {
+            get {
+              return resultMap["id"]! as! GraphQLID
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "id")
+            }
+          }
+
+          public var name: String {
+            get {
+              return resultMap["name"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "name")
+            }
+          }
         }
       }
     }
@@ -1063,6 +1506,8 @@ public final class SaveImageMutation: GraphQLMutation {
     mutation saveImage($imageId: ID!, $albumId: ID!) {
       saveImage(imageId: $imageId, albumId: $albumId) {
         __typename
+        id
+        created
         image {
           __typename
           id
@@ -1117,6 +1562,8 @@ public final class SaveImageMutation: GraphQLMutation {
 
       public static let selections: [GraphQLSelection] = [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("created", type: .nonNull(.scalar(String.self))),
         GraphQLField("image", type: .nonNull(.object(Image.selections))),
       ]
 
@@ -1126,8 +1573,8 @@ public final class SaveImageMutation: GraphQLMutation {
         self.resultMap = unsafeResultMap
       }
 
-      public init(image: Image) {
-        self.init(unsafeResultMap: ["__typename": "Image", "image": image.resultMap])
+      public init(id: GraphQLID, created: String, image: Image) {
+        self.init(unsafeResultMap: ["__typename": "Image", "id": id, "created": created, "image": image.resultMap])
       }
 
       public var __typename: String {
@@ -1136,6 +1583,24 @@ public final class SaveImageMutation: GraphQLMutation {
         }
         set {
           resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var id: GraphQLID {
+        get {
+          return resultMap["id"]! as! GraphQLID
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      public var created: String {
+        get {
+          return resultMap["created"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "created")
         }
       }
 
@@ -1191,372 +1656,6 @@ public final class SaveImageMutation: GraphQLMutation {
           }
           set {
             resultMap.updateValue(newValue, forKey: "name")
-          }
-        }
-      }
-    }
-  }
-}
-
-public final class FindAlbumByIdMutation: GraphQLMutation {
-  /// The raw GraphQL definition of this operation.
-  public let operationDefinition =
-    """
-    mutation findAlbumById($id: ID!) {
-      findAlbumById(id: $id) {
-        __typename
-        name
-        images {
-          __typename
-          image {
-            __typename
-            name
-          }
-          created
-          audioWho {
-            __typename
-            name
-          }
-          audioWhen {
-            __typename
-            name
-          }
-          audioWhere {
-            __typename
-            name
-          }
-        }
-        shareCode
-        created
-      }
-    }
-    """
-
-  public let operationName = "findAlbumById"
-
-  public var id: GraphQLID
-
-  public init(id: GraphQLID) {
-    self.id = id
-  }
-
-  public var variables: GraphQLMap? {
-    return ["id": id]
-  }
-
-  public struct Data: GraphQLSelectionSet {
-    public static let possibleTypes = ["Mutation"]
-
-    public static let selections: [GraphQLSelection] = [
-      GraphQLField("findAlbumById", arguments: ["id": GraphQLVariable("id")], type: .object(FindAlbumById.selections)),
-    ]
-
-    public private(set) var resultMap: ResultMap
-
-    public init(unsafeResultMap: ResultMap) {
-      self.resultMap = unsafeResultMap
-    }
-
-    public init(findAlbumById: FindAlbumById? = nil) {
-      self.init(unsafeResultMap: ["__typename": "Mutation", "findAlbumById": findAlbumById.flatMap { (value: FindAlbumById) -> ResultMap in value.resultMap }])
-    }
-
-    public var findAlbumById: FindAlbumById? {
-      get {
-        return (resultMap["findAlbumById"] as? ResultMap).flatMap { FindAlbumById(unsafeResultMap: $0) }
-      }
-      set {
-        resultMap.updateValue(newValue?.resultMap, forKey: "findAlbumById")
-      }
-    }
-
-    public struct FindAlbumById: GraphQLSelectionSet {
-      public static let possibleTypes = ["Album"]
-
-      public static let selections: [GraphQLSelection] = [
-        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-        GraphQLField("name", type: .nonNull(.scalar(String.self))),
-        GraphQLField("images", type: .list(.object(Image.selections))),
-        GraphQLField("shareCode", type: .nonNull(.scalar(String.self))),
-        GraphQLField("created", type: .nonNull(.scalar(String.self))),
-      ]
-
-      public private(set) var resultMap: ResultMap
-
-      public init(unsafeResultMap: ResultMap) {
-        self.resultMap = unsafeResultMap
-      }
-
-      public init(name: String, images: [Image?]? = nil, shareCode: String, created: String) {
-        self.init(unsafeResultMap: ["__typename": "Album", "name": name, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "shareCode": shareCode, "created": created])
-      }
-
-      public var __typename: String {
-        get {
-          return resultMap["__typename"]! as! String
-        }
-        set {
-          resultMap.updateValue(newValue, forKey: "__typename")
-        }
-      }
-
-      public var name: String {
-        get {
-          return resultMap["name"]! as! String
-        }
-        set {
-          resultMap.updateValue(newValue, forKey: "name")
-        }
-      }
-
-      public var images: [Image?]? {
-        get {
-          return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
-        }
-        set {
-          resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
-        }
-      }
-
-      public var shareCode: String {
-        get {
-          return resultMap["shareCode"]! as! String
-        }
-        set {
-          resultMap.updateValue(newValue, forKey: "shareCode")
-        }
-      }
-
-      public var created: String {
-        get {
-          return resultMap["created"]! as! String
-        }
-        set {
-          resultMap.updateValue(newValue, forKey: "created")
-        }
-      }
-
-      public struct Image: GraphQLSelectionSet {
-        public static let possibleTypes = ["Image"]
-
-        public static let selections: [GraphQLSelection] = [
-          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-          GraphQLField("image", type: .nonNull(.object(Image.selections))),
-          GraphQLField("created", type: .nonNull(.scalar(String.self))),
-          GraphQLField("audioWho", type: .object(AudioWho.selections)),
-          GraphQLField("audioWhen", type: .object(AudioWhen.selections)),
-          GraphQLField("audioWhere", type: .object(AudioWhere.selections)),
-        ]
-
-        public private(set) var resultMap: ResultMap
-
-        public init(unsafeResultMap: ResultMap) {
-          self.resultMap = unsafeResultMap
-        }
-
-        public init(image: Image, created: String, audioWho: AudioWho? = nil, audioWhen: AudioWhen? = nil, audioWhere: AudioWhere? = nil) {
-          self.init(unsafeResultMap: ["__typename": "Image", "image": image.resultMap, "created": created, "audioWho": audioWho.flatMap { (value: AudioWho) -> ResultMap in value.resultMap }, "audioWhen": audioWhen.flatMap { (value: AudioWhen) -> ResultMap in value.resultMap }, "audioWhere": audioWhere.flatMap { (value: AudioWhere) -> ResultMap in value.resultMap }])
-        }
-
-        public var __typename: String {
-          get {
-            return resultMap["__typename"]! as! String
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "__typename")
-          }
-        }
-
-        public var image: Image {
-          get {
-            return Image(unsafeResultMap: resultMap["image"]! as! ResultMap)
-          }
-          set {
-            resultMap.updateValue(newValue.resultMap, forKey: "image")
-          }
-        }
-
-        public var created: String {
-          get {
-            return resultMap["created"]! as! String
-          }
-          set {
-            resultMap.updateValue(newValue, forKey: "created")
-          }
-        }
-
-        public var audioWho: AudioWho? {
-          get {
-            return (resultMap["audioWho"] as? ResultMap).flatMap { AudioWho(unsafeResultMap: $0) }
-          }
-          set {
-            resultMap.updateValue(newValue?.resultMap, forKey: "audioWho")
-          }
-        }
-
-        public var audioWhen: AudioWhen? {
-          get {
-            return (resultMap["audioWhen"] as? ResultMap).flatMap { AudioWhen(unsafeResultMap: $0) }
-          }
-          set {
-            resultMap.updateValue(newValue?.resultMap, forKey: "audioWhen")
-          }
-        }
-
-        public var audioWhere: AudioWhere? {
-          get {
-            return (resultMap["audioWhere"] as? ResultMap).flatMap { AudioWhere(unsafeResultMap: $0) }
-          }
-          set {
-            resultMap.updateValue(newValue?.resultMap, forKey: "audioWhere")
-          }
-        }
-
-        public struct Image: GraphQLSelectionSet {
-          public static let possibleTypes = ["Attachment"]
-
-          public static let selections: [GraphQLSelection] = [
-            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("name", type: .nonNull(.scalar(String.self))),
-          ]
-
-          public private(set) var resultMap: ResultMap
-
-          public init(unsafeResultMap: ResultMap) {
-            self.resultMap = unsafeResultMap
-          }
-
-          public init(name: String) {
-            self.init(unsafeResultMap: ["__typename": "Attachment", "name": name])
-          }
-
-          public var __typename: String {
-            get {
-              return resultMap["__typename"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "__typename")
-            }
-          }
-
-          public var name: String {
-            get {
-              return resultMap["name"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "name")
-            }
-          }
-        }
-
-        public struct AudioWho: GraphQLSelectionSet {
-          public static let possibleTypes = ["Attachment"]
-
-          public static let selections: [GraphQLSelection] = [
-            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("name", type: .nonNull(.scalar(String.self))),
-          ]
-
-          public private(set) var resultMap: ResultMap
-
-          public init(unsafeResultMap: ResultMap) {
-            self.resultMap = unsafeResultMap
-          }
-
-          public init(name: String) {
-            self.init(unsafeResultMap: ["__typename": "Attachment", "name": name])
-          }
-
-          public var __typename: String {
-            get {
-              return resultMap["__typename"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "__typename")
-            }
-          }
-
-          public var name: String {
-            get {
-              return resultMap["name"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "name")
-            }
-          }
-        }
-
-        public struct AudioWhen: GraphQLSelectionSet {
-          public static let possibleTypes = ["Attachment"]
-
-          public static let selections: [GraphQLSelection] = [
-            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("name", type: .nonNull(.scalar(String.self))),
-          ]
-
-          public private(set) var resultMap: ResultMap
-
-          public init(unsafeResultMap: ResultMap) {
-            self.resultMap = unsafeResultMap
-          }
-
-          public init(name: String) {
-            self.init(unsafeResultMap: ["__typename": "Attachment", "name": name])
-          }
-
-          public var __typename: String {
-            get {
-              return resultMap["__typename"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "__typename")
-            }
-          }
-
-          public var name: String {
-            get {
-              return resultMap["name"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "name")
-            }
-          }
-        }
-
-        public struct AudioWhere: GraphQLSelectionSet {
-          public static let possibleTypes = ["Attachment"]
-
-          public static let selections: [GraphQLSelection] = [
-            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("name", type: .nonNull(.scalar(String.self))),
-          ]
-
-          public private(set) var resultMap: ResultMap
-
-          public init(unsafeResultMap: ResultMap) {
-            self.resultMap = unsafeResultMap
-          }
-
-          public init(name: String) {
-            self.init(unsafeResultMap: ["__typename": "Attachment", "name": name])
-          }
-
-          public var __typename: String {
-            get {
-              return resultMap["__typename"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "__typename")
-            }
-          }
-
-          public var name: String {
-            get {
-              return resultMap["name"]! as! String
-            }
-            set {
-              resultMap.updateValue(newValue, forKey: "name")
-            }
           }
         }
       }

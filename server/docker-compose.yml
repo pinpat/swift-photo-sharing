@@ -13,6 +13,8 @@ services:
       - "MYSQL_PASSWORD=yaad@2019"
       - "NODE_ENV=production"
       - "DISABLE_PLAYGROUND=false"
+      - "DOMAIN=yaadapp.com"
+      - "UPLOAD_DIR=/usr/src/server/storage"
     ports:
       - 8080:8080
     links:

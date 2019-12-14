@@ -9,25 +9,30 @@
 import SwiftUI
 
 struct CreatorScreen: View {
+    @EnvironmentObject var store: Store
     var body: some View {
         VStack(alignment: .leading, spacing: 1.0){
-            List{
-               NavigationLink(destination: Albums()){
-                    MenuItemView(title: "Memory Book")
+//            List{
+//               NavigationLink(destination: Albums()){
+//                    MenuItemView(title: "Memory Book")
+//                }
+//                NavigationLink(destination: ContributeScreen()){
+//                    MenuItemView(title: "Contribute")
+//                }
+//                NavigationLink(destination: ShareScreen()){
+//                    MenuItemView(title: "Share")
+//                }
+//                NavigationLink(destination: AboutScreen()){
+//                    MenuItemView(title: "About")
+//                }
+//            }
+//
+            Albums()
+                .onAppear(){
+                    self.store.isMemoryBook = false
                 }
-                NavigationLink(destination: ContributeScreen()){
-                    MenuItemView(title: "Contribute")
-                }
-                NavigationLink(destination: ShareScreen()){
-                    MenuItemView(title: "Share")
-                }
-                NavigationLink(destination: AboutScreen()){
-                    MenuItemView(title: "About")
-                }
-            }
-            
-            
         }.navigationBarTitle("Yaad", displayMode: .inline)
+        
     }
 }
 

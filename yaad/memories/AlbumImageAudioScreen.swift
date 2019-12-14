@@ -5,15 +5,15 @@
 //  Created by Toan Nguyen Dinh on 11/16/19.
 //  Copyright © 2019 Toan Nguyen Dinh. All rights reserved.
 //
-
 import SwiftUI
 import AVFoundation
 import Combine
 
 struct AlbumImageAudioScreen: View {
     
-    @Binding var audio: Audio?
-    @State var album: Album
+    var isMemoryBook: Bool
+    @State var image: AlbumImage = AlbumImage(id: "", url: "")
+    @State var audio: Audio? = Audio(id: "", url: "")
     var type: String
     @ObservedObject var audioPlayer: AudioPlayer = AudioPlayer()
     @ObservedObject var audioRecorder: AudioRecorder = AudioRecorder()
@@ -25,7 +25,6 @@ struct AlbumImageAudioScreen: View {
     @State var downTime = false
     @State var upTime = false
     @State var record = false
-    var selectedIndex: Int = 0
     
     func timeFormatted(totalSeconds: Int) -> String {
         let seconds: Int = totalSeconds % 60
@@ -50,36 +49,38 @@ struct AlbumImageAudioScreen: View {
                             self.downTime = false
                         }
                 }
-                Button(action:{
-                    withAnimation{
-                        self.audioFilename = self.documentPath.appendingPathComponent("\(Date().toString(dateFormat: "dd-MM-YY_'at'_HH:mm:ss")).m4a")
-                        if self.audioRecorder.recording == false {
-                            self.audioRecorder.startRecording(audioFileName: self.audioFilename)
-                            self.timeRemaining = 0
-                            self.upTime = true
-                            self.record = true
-                        }else{
-                            self.audioRecorder.stopRecording()
-                            self.upTime = false
+                if self.isMemoryBook {
+                    Button(action:{
+                        withAnimation{
+                            self.audioFilename = self.documentPath.appendingPathComponent("\(Date().toString(dateFormat: "dd-MM-YY_'at'_HH:mm:ss")).m4a")
+                            if self.audioRecorder.recording == false {
+                                self.audioRecorder.startRecording(audioFileName: self.audioFilename)
+                                self.timeRemaining = 0
+                                self.upTime = true
+                                self.record = true
+                            }else{
+                                self.audioRecorder.stopRecording()
+                                self.upTime = false
+                            }
                         }
-                    }
-                }){
-                    if self.audioRecorder.recording == false {
-                        Text("Record")
+                    }){
+                        if self.audioRecorder.recording == false {
+                            Text("Record")
+                                .frame(width: UIScreen.main.bounds.width,alignment: .center)
+                                .padding()
+                                .background(Color.init(red: 202/255, green: 204/255, blue: 206/255))
+                                .foregroundColor(.black)
+                                .font(.body)
+                        }else{
+                            Text("Stop")
                             .frame(width: UIScreen.main.bounds.width,alignment: .center)
                             .padding()
                             .background(Color.init(red: 202/255, green: 204/255, blue: 206/255))
                             .foregroundColor(.black)
                             .font(.body)
-                    }else{
-                        Text("Stop")
-                        .frame(width: UIScreen.main.bounds.width,alignment: .center)
-                        .padding()
-                        .background(Color.init(red: 202/255, green: 204/255, blue: 206/255))
-                        .foregroundColor(.black)
-                        .font(.body)
+                        }
+                        
                     }
-                    
                 }
 
                 Button(action:{
@@ -103,26 +104,50 @@ struct AlbumImageAudioScreen: View {
                         .foregroundColor(.black)
                         .font(.body)
                 }
-                Button(action:{
-                    Network().uploadFile(image: nil, data: try? Data(contentsOf: self.audioRecorder.recordings.last!.fileURL), completion: { result in
-                        if result != nil {
-                            Network.shared.apollo.perform(mutation: SaveAudioMutation(id: self.album.images[self.selectedIndex].id, audioId: String(result!.id), type: self.type)) {rs in
-                                guard let dt = try? rs.get().data else { return }
-                                print(dt)
+                if self.isMemoryBook {
+                    Button(action:{
+                        Network().uploadFile(image: nil, data: try? Data(contentsOf: self.audioRecorder.recordings.last!.fileURL), completion: { result in
+                            if result != nil {
+                                Network.shared.apollo.perform(mutation: SaveAudioMutation(id: self.image.id, audioId: String(result!.id), type: self.type)) {rs in
+                                    guard let dt = try? rs.get().data else { return }
+                                    let audio = Audio(id: String(result!.id), url: result!.url)
+                                    switch self.type {
+                                        case "audioWho":
+                                            self.image.whoAudio = audio
+                                        case "audioWhen":
+                                            self.image.whenAudio = audio
+                                        case "audioWhere":
+                                            self.image.whereAudio = audio
+                                        default:
+                                            print(dt)
+                                    }
+                                    self.audio = audio
+                                }
                             }
-                        }
-                    })
-                }){
-                    Text("Upload")
-                        .frame(width: UIScreen.main.bounds.width,alignment: .center)
-                        .padding()
-                        .background(Color.init(red: 202/255, green: 204/255, blue: 206/255))
-                        .foregroundColor(.black)
-                        .font(.body)
+                        })
+                    }){
+                        Text("Upload")
+                            .frame(width: UIScreen.main.bounds.width,alignment: .center)
+                            .padding()
+                            .background(Color.init(red: 202/255, green: 204/255, blue: 206/255))
+                            .foregroundColor(.black)
+                            .font(.body)
+                    }
                 }
             }
             Spacer()
         }.onAppear(){
+//            self.image = self.store.selectedImage
+            switch self.type {
+                case "audioWho":
+                    self.audio = self.image.whoAudio
+                case "audioWhere":
+                    self.audio = self.image.whereAudio
+                case "audioWhen":
+                    self.audio = self.image.whenAudio
+                default:
+                    print("")
+            }
             if self.audio != nil && self.audio!.url != ""{
                 self.audioPlayer.downloadFileFromURL(url: URL(string: self.audio!.url)!, callback: { result in
                     do {
@@ -139,10 +164,10 @@ struct AlbumImageAudioScreen: View {
     }
 }
 
-struct AlbumImageAudioScreen_Previews: PreviewProvider {
-    @State static var audio: Audio? = Audio(id: "", url: "", duration: 10)
-    @State static var album: Album = Store().albums[0]
-    static var previews: some View {
-        AlbumImageAudioScreen(audio: self.$audio,album: self.album, type: "audioWho")
-    }
-}
+//struct AlbumImageAudioScreen_Previews: PreviewProvider {
+//    @State static var audio: Audio? = Audio(id: "", url: "", duration: 10)
+//    @State static var image: AlbumImage = Store().albums[0].images.first
+//    static var previews: some View {
+//        AlbumImageAudioScreen(audio: self.$audio,image: self.image!, type: "audioWho")
+//    }
+//}

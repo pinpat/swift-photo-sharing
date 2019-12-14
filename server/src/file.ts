@@ -6,7 +6,7 @@ import * as jwt from "jsonwebtoken";
 import moment from 'moment';
 import { getUserIdFromRequest } from "./auth";
 import { User } from "./entity/User";
-import { URL } from "./config";
+import {UPLOAD_DIR, URL} from "./config";
 
 const key = 'jwt-file-service-key';
 
@@ -65,7 +65,7 @@ export const fileHandler = async (req: Request, response: Response) => {
         response.send('File not found!');
         return
     }
-    const filePath = path.join(`./storage/${name}`);
+    const filePath = path.join(`${UPLOAD_DIR}/${name}`);
     const stat = fileSystem.statSync(filePath);
     response.writeHead(200, {
         'Content-Type': attachment.contentType,

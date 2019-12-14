@@ -18,33 +18,12 @@ mutation saveAudio($id: ID!, $audioId: ID!, $type: String!){
 
 mutation saveImage($imageId: ID!, $albumId: ID!){
   saveImage(imageId: $imageId albumId: $albumId){
+    id
+    created
     image{
         id
         name
     }
-  }
-}
-
-mutation findAlbumById($id: ID!){
-  findAlbumById(id: $id){
-    name
-    images{
-      image{
-        name
-      }
-      created
-      audioWho{
-        name
-      }
-      audioWhen{
-        name
-      }
-      audioWhere{
-        name
-      }
-    }
-    shareCode
-      created
   }
 }
 
