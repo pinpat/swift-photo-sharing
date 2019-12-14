@@ -52,22 +52,24 @@ struct RegisterScreen: View {
                 }
                 Button(action:{
                     self.onChange = true
-                    Network.shared.apollo.perform(mutation: RegisterMutation(email: self.email, password: self.password)){ result in
-                        switch result {
+                    if isValidEmail(emailStr: self.email) && self.onChange {
+                        Network.shared.apollo.perform(mutation: RegisterMutation(email: self.email, password: self.password)){ result in
+                            switch result {
                             case .success:
                                 Network.shared.apollo.perform(mutation: LoginMutation(email: self.email, password: self.password)) { rs in
-                                        switch rs {
-                                            case .success:
-                                               guard let data = try? rs.get().data else { return }
-                                               self.isLogin = true
-                                               UserManager.shared.hasAuthenticatedUser = true
-                                               UserManager.shared.currentAuthToken = data.login.id
-                                            case .failure:
-                                                print(result)
-                                        }
+                                    switch rs {
+                                    case .success:
+                                        guard let data = try? rs.get().data else { return }
+                                        self.isLogin = true
+                                        UserManager.shared.hasAuthenticatedUser = true
+                                        UserManager.shared.currentAuthToken = data.login.id
+                                    case .failure:
+                                        print(result)
+                                    }
                                 }
                             case .failure:
                                 print(result)
+                            }
                         }
                     }
                 }){

@@ -9,8 +9,8 @@
 import SwiftUI
 
 struct LoginScreen: View {
-    @State var email: String = "caotin123@gmail.com"
-    @State var password: String = "123"
+    @State var email: String = ""
+    @State var password: String = ""
     @Binding var isLogin: Bool
     @State var onChange: Bool = false
     @Binding var isScreenLogin: Bool
@@ -59,6 +59,7 @@ struct LoginScreen: View {
                                         self.isLogin = true
                                         UserManager.shared.hasAuthenticatedUser = true
                                         UserManager.shared.currentAuthToken = data.login.id
+                                        UserDefaults.standard.set(data.login.id, forKey: "authToken")
                                         self.store.onLoadData()
                                     case .failure:
                                         print(result)
@@ -88,6 +89,9 @@ struct LoginScreen: View {
                 Spacer()
             }
         }.padding(20)
+        .onAppear(){
+            self.isLogin = Network.shared.checkAuthentication()
+        }
     }
 }
 

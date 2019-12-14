@@ -56,7 +56,7 @@ const startServer = async () => {
     server.applyMiddleware({
         app,
         cors: corsOptions,
-        bodyParserConfig: {limit: "10mb"},
+        bodyParserConfig: {limit: "20mb"},
     });
     app.use(corsMiddleware(corsOptions));
 

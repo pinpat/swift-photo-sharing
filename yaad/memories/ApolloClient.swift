@@ -52,6 +52,13 @@ class Network {
         delegate: self
     )
     
+    func checkAuthentication() -> Bool {
+        if UserDefaults.standard.string(forKey: "authToken") != nil {
+            return true
+        }
+        return false
+    }
+    
     // Use the configured network transport in your Apollo client.
     private(set) lazy var apollo = ApolloClient(networkTransport: self.networkTransport)
     
@@ -70,6 +77,7 @@ class Network {
             switch result {
             case .success(let upload, _, _):
                 upload.responseString { response in
+                    print(response)
                     do {
                         completion(try JSONDecoder().decode(FileResponseData.self, from: (response.value?.data(using: .utf8))!))
                     } catch let messs {

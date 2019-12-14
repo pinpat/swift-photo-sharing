@@ -31,10 +31,23 @@ struct Albums: View {
                                 .font(.headline)
                                 .foregroundColor(.black)
                             }else{
-                                ImageLoader(imageURL: URL(string: self.store.albums[index].image))
-                                .frame(width: geometry.size.width, height: 250, alignment: .center)
-                                .aspectRatio(contentMode: .fill)
-                                .clipped()
+//                                ImageLoader(imageURL: URL(string: self.store.albums[index].image))
+//                                .frame(width: geometry.size.width, height: 250, alignment: .center)
+//                                .aspectRatio(contentMode: .fill)
+//                                .clipped()
+//                                Text(self.store.albums[index].title)
+//                                .font(.headline)
+//                                .foregroundColor(.white)
+                                URLImage(URL(string: self.store.albums[index].image)!,
+                                delay: 0.25,
+                                processors: [ Resize(size: CGSize(width: geometry.size.width, height: 250), scale: UIScreen.main.scale) ],
+                                content:  {
+                                    $0.image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .clipped()
+                                })
+                                    .frame(width: geometry.size.width, height: 250)
                                 Text(self.store.albums[index].title)
                                 .font(.headline)
                                 .foregroundColor(.white)
